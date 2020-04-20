@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CleverScheduleProject.Data;
 using CleverScheduleProject.Models;
+using System.Security.Claims;
 
 namespace CleverScheduleProject.Controllers
 {
@@ -21,24 +22,34 @@ namespace CleverScheduleProject.Controllers
         }
 
         // GET: Contractors
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var applicationDbContext = _context.Contractors.Include(c => c.Address).Include(c => c.IdentityUser);
-            return View(await applicationDbContext.ToListAsync());
+            var applicationDbContext = _context.Contractors.Include(d => d.IdentityUser);
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var contractor = _context.Contractors.Where(d => d.IdentityUserId == userId)
+                .Include(c => c.Address)
+                .Include(c => c.IdentityUser)
+                .SingleOrDefault();
+            if (contractor == null)
+            {
+                return RedirectToAction(nameof(Create));
+            }
+            return RedirectToAction(nameof(Schedule));
         }
 
         // GET: Contractors/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            //if (id == null)
+            //{
+            //    return NotFound();
+            //}
 
-            var contractor = await _context.Contractors
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var contractor = _context.Contractors.Where(d => d.IdentityUserId == userId)
                 .Include(c => c.Address)
                 .Include(c => c.IdentityUser)
-                .FirstOrDefaultAsync(m => m.ContractorId == id);
+                .SingleOrDefault();
             if (contractor == null)
             {
                 return NotFound();
@@ -62,15 +73,30 @@ namespace CleverScheduleProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(contractor);
+                _context.Addresses.Add(address);
+                _context.SaveChanges();
+
+                var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                contractor.IdentityUserId = userId;
+                contractor.Address = address;
+                contractor.AddressId = address.AddressId;
+
+                _context.Contractors.Add(contractor);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AddressId"] = new SelectList(_context.Addresses, "AddressId", "AddressId", contractor.AddressId);
-            ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", contractor.IdentityUserId);
             return View(contractor);
         }
 
+        public async Task<IActionResult> Schedule()
+        {
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var appointments = _context.Appointments
+                .Include(a => a.Client)
+                .Include(a => a.Contractor)
+                .Where(a => a.Contractor.IdentityUserId == userId);
+            return View(await appointments.ToListAsync());
+        }
         // GET: Contractors/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
