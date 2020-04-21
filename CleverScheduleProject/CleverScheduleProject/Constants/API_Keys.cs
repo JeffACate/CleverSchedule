@@ -7,6 +7,6 @@ namespace CleverScheduleProject.Constants
 {
     public static class API_Keys
     {
-        public static string Bing = "";
+        public static string Bing = "changed on git";
     }
 }
