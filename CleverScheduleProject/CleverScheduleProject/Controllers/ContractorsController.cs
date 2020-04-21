@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using CleverScheduleProject.Data;
 using CleverScheduleProject.Models;
 using System.Security.Claims;
+using CleverScheduleProject.Library;
 
 namespace CleverScheduleProject.Controllers
 {
@@ -15,14 +16,16 @@ namespace CleverScheduleProject.Controllers
     public class ContractorsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly GeocodingService _geocodingService;
 
-        public ContractorsController(ApplicationDbContext context)
+        public ContractorsController(ApplicationDbContext context, GeocodingService geocodingService)
         {
             _context = context;
+            _geocodingService = geocodingService;
         }
 
         // GET: Contractors
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Contractors.Include(d => d.IdentityUser);
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -30,6 +33,8 @@ namespace CleverScheduleProject.Controllers
                 .Include(c => c.Address)
                 .Include(c => c.IdentityUser)
                 .SingleOrDefault();
+
+            
             if (contractor == null)
             {
                 return RedirectToAction(nameof(Create));
@@ -40,22 +45,36 @@ namespace CleverScheduleProject.Controllers
         // GET: Contractors/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            //if (id == null)
-            //{
-            //    return NotFound();
-            //}
-
-            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var contractor = _context.Contractors.Where(d => d.IdentityUserId == userId)
+            if (id == null)
+            {
+                var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var contractor = _context.Contractors.Where(c => c.IdentityUserId == userId)
                 .Include(c => c.Address)
                 .Include(c => c.IdentityUser)
                 .SingleOrDefault();
-            if (contractor == null)
-            {
-                return NotFound();
-            }
 
-            return View(contractor);
+                if (contractor == null)
+                {
+                    return NotFound();
+                }
+
+                return View(contractor);
+
+            }
+            else 
+            {
+                var contractor = _context.Contractors.Where(c => c.ContractorId == id)
+                .Include(c => c.Address)
+                .Include(c => c.IdentityUser)
+                .SingleOrDefault();
+
+                if (contractor == null)
+                {
+                    return NotFound();
+                }
+
+                return View(contractor);
+            }
         }
 
         // GET: Contractors/Create
@@ -71,8 +90,14 @@ namespace CleverScheduleProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ContractorId,Name,AddressId,IdentityUserId")] Contractor contractor, [Bind("Street,City,State,Zip")] Address address)
         {
+
             if (ModelState.IsValid)
             {
+                var coords = await _geocodingService.GetCoords(address); // Calling the service to make api call
+
+                address.Lat = coords[0];
+                address.Lon = coords[1];
+
                 _context.Addresses.Add(address);
                 _context.SaveChanges();
 
