@@ -25,15 +25,14 @@ namespace CleverScheduleProject.Controllers
         }
 
         // GET: Contractors
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var applicationDbContext = _context.Contractors.Include(d => d.IdentityUser);
+            var applicationDbContext = _context.Contractors.Include(c => c.IdentityUser);
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var contractor = _context.Contractors.Where(d => d.IdentityUserId == userId)
+            var contractor = _context.Contractors.Where(c => c.IdentityUserId == userId)
                 .Include(c => c.Address)
                 .Include(c => c.IdentityUser)
                 .SingleOrDefault();
-
             
             if (contractor == null)
             {
@@ -43,23 +42,11 @@ namespace CleverScheduleProject.Controllers
         }
 
         // GET: Contractors/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
             if (id == null)
             {
-                var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var contractor = _context.Contractors.Where(c => c.IdentityUserId == userId)
-                .Include(c => c.Address)
-                .Include(c => c.IdentityUser)
-                .SingleOrDefault();
-
-                if (contractor == null)
-                {
-                    return NotFound();
-                }
-
-                return View(contractor);
-
+                return NotFound();
             }
             else 
             {
@@ -72,7 +59,6 @@ namespace CleverScheduleProject.Controllers
                 {
                     return NotFound();
                 }
-
                 return View(contractor);
             }
         }
@@ -93,7 +79,7 @@ namespace CleverScheduleProject.Controllers
 
             if (ModelState.IsValid)
             {
-                var coords = await _geocodingService.GetCoords(address); // Calling the service to make api call
+                var coords = await _geocodingService.GetCoords(address); 
 
                 address.Lat = coords[0];
                 address.Lon = coords[1];

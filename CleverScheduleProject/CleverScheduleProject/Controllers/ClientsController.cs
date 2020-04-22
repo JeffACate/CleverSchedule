@@ -7,37 +7,49 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CleverScheduleProject.Data;
 using CleverScheduleProject.Models;
+using System.Security.Claims;
+using CleverScheduleProject.Library;
 
 namespace CleverScheduleProject.Controllers
 {
     public class ClientsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly GeocodingService _geocodingService;
 
-        public ClientsController(ApplicationDbContext context)
+        public ClientsController(ApplicationDbContext context, GeocodingService geocodingService)
         {
             _context = context;
+            _geocodingService = geocodingService;
         }
 
         // GET: Clients
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var applicationDbContext = _context.Clients.Include(c => c.Address).Include(c => c.IdentityUser);
-            return View(await applicationDbContext.ToListAsync());
+            var applicationDbContext = _context.Clients.Include(d => d.IdentityUser);
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var client = _context.Clients.Where(c => c.IdentityUserId == userId)
+                .Include(c => c.Address)
+                .Include(c => c.IdentityUser)
+                .SingleOrDefault();
+
+            if (client == null)
+            {
+                return RedirectToAction(nameof(Create));
+            }
+            return RedirectToAction(nameof(Details));
         }
 
         // GET: Clients/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details()
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var client = await _context.Clients
+            var applicationDbContext = _context.Clients.Include(d => d.IdentityUser);
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var client = _context.Clients.Where(c => c.IdentityUserId == userId)
                 .Include(c => c.Address)
                 .Include(c => c.IdentityUser)
-                .FirstOrDefaultAsync(m => m.ClientId == id);
+                .SingleOrDefault();
+
             if (client == null)
             {
                 return NotFound();
@@ -59,16 +71,28 @@ namespace CleverScheduleProject.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ClientId,Name,AddressId,IdentityUserId")] Client client)
+        public async Task<IActionResult> Create([Bind("ContractorId,Name,AddressId,IdentityUserId")] Client client, [Bind("Street,City,State,Zip")] Address address)
         {
+
             if (ModelState.IsValid)
             {
-                _context.Add(client);
+                var coords = await _geocodingService.GetCoords(address);
+
+                address.Lat = coords[0];
+                address.Lon = coords[1];
+
+                _context.Addresses.Add(address);
+                _context.SaveChanges();
+
+                var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                client.IdentityUserId = userId;
+                client.Address = address;
+                client.AddressId = address.AddressId;
+
+                _context.Clients.Add(client);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AddressId"] = new SelectList(_context.Addresses, "AddressId", "AddressId", client.AddressId);
-            ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", client.IdentityUserId);
             return View(client);
         }
 

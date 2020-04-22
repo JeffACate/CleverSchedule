@@ -22,8 +22,6 @@
                 <label asp-for="IdentityUserId" class="control-label" hidden></label>
                 <input asp-for="IdentityUserId" class="form-control" value="Contractor" hidden>
             </div>
-
-            @* CREATE ADDRESS*@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Address.Street" class="control-label"></label>
@@ -37,7 +35,60 @@
             </div>
             <div class="form-group">
                 <label asp-for="Address.State" class="control-label"></label>
-                <input asp-for="Address.State" class="form-control" />
+                <select asp-for="Address.State" class="form-control">
+                    <option value="" disabled selected>State</option>
+                    <option Value="AL">Alabama</option>
+                    <option Value="AK">Alaska</option>
+                    <option Value="AZ">Arizona</option>
+                    <option Value="AR">Arkansas</option>
+                    <option Value="CA">California</option>
+                    <option Value="CO">Colorado</option>
+                    <option Value="CT">Connecticut</option>
+                    <option Value="DC">District of Columbia</option>
+                    <option Value="DE">Delaware</option>
+                    <option Value="FL">Florida</option>
+                    <option Value="GA">Georgia</option>
+                    <option Value="HI">Hawaii</option>
+                    <option Value="ID">Idaho</option>
+                    <option Value="IL">Illinois</option>
+                    <option Value="IN">Indiana</option>
+                    <option Value="IA">Iowa</option>
+                    <option Value="KS">Kansas</option>
+                    <option Value="KY">Kentucky</option>
+                    <option Value="LA">Louisiana</option>
+                    <option Value="ME">Maine</option>
+                    <option Value="MD">Maryland</option>
+                    <option Value="MA">Massachusetts</option>
+                    <option Value="MI">Michigan</option>
+                    <option Value="MN">Minnesota</option>
+                    <option Value="MS">Mississippi</option>
+                    <option Value="MO">Missouri</option>
+                    <option Value="MT">Montana</option>
+                    <option Value="NE">Nebraska</option>
+                    <option Value="NV">Nevada</option>
+                    <option Value="NH">New Hampshire</option>
+                    <option Value="NJ">New Jersey</option>
+                    <option Value="NM">New Mexico</option>
+                    <option Value="NY">New York</option>
+                    <option Value="NC">North Carolina</option>
+                    <option Value="ND">North Dakota</option>
+                    <option Value="OH">Ohio</option>
+                    <option Value="OK">Oklahoma</option>
+                    <option Value="OR">Oregon</option>
+                    <option Value="PA">Pennsylvania</option>
+                    <option Value="RI">Rhode Island</option>
+                    <option Value="SC">South Carolina</option>
+                    <option Value="SD">South Dakota</option>
+                    <option Value="TN">Tennessee</option>
+                    <option Value="TX">Texas</option>
+                    <option Value="UT">Utah</option>
+                    <option Value="VT">Vermont</option>
+                    <option Value="VA">Virginia</option>
+                    <option Value="WA">Washington</option>
+                    <option Value="WV">West Virginia</option>
+                    <option Value="WI">Wisconsin</option>
+                    <option Value="WY">Wyoming</option>
+                </select>
                 <span asp-validation-for="Address.State" class="text-danger"></span>
             </div>
             <div class="form-group">

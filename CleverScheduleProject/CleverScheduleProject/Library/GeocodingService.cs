@@ -43,9 +43,7 @@ namespace CleverScheduleProject.Library
 
                 coords[0] = result.Point.Coordinates[0];
                 coords[1] = result.Point.Coordinates[1];
-
             }
-
             return coords;
         }
     }
