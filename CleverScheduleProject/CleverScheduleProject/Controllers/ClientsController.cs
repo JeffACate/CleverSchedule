@@ -37,11 +37,11 @@ namespace CleverScheduleProject.Controllers
             {
                 return RedirectToAction(nameof(Create));
             }
-            return RedirectToAction(nameof(Details));
+            return RedirectToAction(nameof(Profile));
         }
 
         // GET: Clients/Details/5
-        public IActionResult Details()
+        public IActionResult Profile()
         {
             var applicationDbContext = _context.Clients.Include(d => d.IdentityUser);
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);

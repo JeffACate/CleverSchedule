@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -19,5 +20,8 @@ namespace CleverScheduleProject.Models
         [ForeignKey("Contractor")]
         public int ContractorId { get; set; }
         public Contractor Contractor { get; set; }
+
+        [NotMapped]
+        public static List<SelectListItem> Contractors { get; set; }
     }
 }

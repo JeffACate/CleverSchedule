@@ -10,5 +10,8 @@ namespace CleverScheduleProject.Constants
         public static string Approved = "Approved";
         public static string Denied = "Denied";
         public static string Pending = "Pending";
+        public static string Client = "Client";
+        public static string Contractor = "Contractor";
+        
     }
 }

@@ -105,7 +105,8 @@ namespace CleverScheduleProject.Controllers
             var appointments = _context.Appointments
                 .Include(a => a.Client)
                 .Include(a => a.Contractor)
-                .Where(a => a.Contractor.IdentityUserId == userId);
+                .Where(a => a.Contractor.IdentityUserId == userId)
+                .Where(a => a.Status == Constants.Appointment_Variables.Approved);
             return View(await appointments.ToListAsync());
         }
         // GET: Contractors/Edit/5

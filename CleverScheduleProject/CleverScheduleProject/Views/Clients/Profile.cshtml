@@ -1,0 +1,116 @@
+﻿@model CleverScheduleProject.Models.Client
+
+@{
+    ViewData["Title"] = "Profile";
+}
+@*body*@
+@*Title*@
+<div class="row col-sm-12 justify-content-center">
+    <div>
+        <h1 class="text-center">Profile</h1>
+        <hr class="bg-white" />
+    </div>
+</div>
+@*MAIN*@
+@*Client section*@
+<div class="row col-sm-12">
+    <div class="border border-light text-dark col-5" style="background-color: cadetblue">
+        <dl class="row text-dark pt-2 " style="background-color: teal">
+            <h4 class="col-sm-12 text-center">
+                @Html.DisplayFor(model => model.Name)
+            </h4>
+            <hr class="col-sm-8 p-0 bg-white" />
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-4 font-weight-bold">
+                @Html.DisplayNameFor(model => model.Address)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.Address.Street)
+                <br />
+                @Html.DisplayFor(model => model.Address.City),
+                @Html.DisplayFor(model => model.Address.State)
+                @Html.DisplayFor(model => model.Address.Zip)
+            </dd>
+            <dt class="col-sm-4 font-weight-bold">
+                Next
+            </dt>
+            <dd class="col-sm-8">
+                12/12/20 12:30 PM
+            </dd>
+        </dl>
+        <div class="row justify-content-center mb-2">
+            <a class="btn btn-dark" asp-controller="Appointments" asp-action="CreateAppointment">+ Schedule Appointment</a>
+        </div>
+    </div>
+    @*Appointments Panel*@
+    <div class="col-7">
+        <table class="table table-secondary table-hover border border-light text-center">
+            <thead class="bg-dark text-white">
+                <tr>
+                    <th>
+                        @*@Html.DisplayNameFor()*@
+                        Date
+                    </th>
+                    <th>
+                        @*@Html.DisplayNameFor()*@
+                        Contractor
+                    </th>
+                    <th>
+                        @*@Html.DisplayNameFor()*@
+                        Status
+                    </th>
+                    <th>
+                        @*@Html.DisplayNameFor()*@
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @*@foreach ()*@
+                @*  {*@
+                <tr>
+                    <td>
+                        @*@Html.DisplayFor()*@
+                        12/12/20 12:30 PM
+                    </td>
+                    <td>
+                        @*@Html.DisplayFor()*@
+                        Jeff Cate
+                    </td>
+                    <td>
+                        @*@Html.DisplayFor()*@
+                        Approved
+                    </td>
+                    <td>
+                        @*@Html.DisplayFor()*@
+                    </td>
+                    @*<td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>*@
+                </tr>
+                <tr>
+                    <td>
+                        @*@Html.DisplayFor()*@
+                        12/19/20 12:30 PM
+                    </td>
+                    <td>
+                        @*@Html.DisplayFor()*@
+                        Jeff Cate
+                    </td>
+                    <td>
+                        @*@Html.DisplayFor()*@
+                        Approved
+                    </td>
+                    <td>
+                        @*@Html.DisplayFor()*@
+                    </td>
+                    @* }*@
+                    </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+@*MAIN*@
+@*body*@
