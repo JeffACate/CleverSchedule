@@ -56,6 +56,9 @@ namespace CleverScheduleProject.Controllers
             return View();
         }
 
+        //CREATE APT
+
+
         // POST: Appointments/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -74,17 +77,63 @@ namespace CleverScheduleProject.Controllers
                     .SingleOrDefault();
                 appointment.ClientId = client.ClientId;
                 appointment.Status = Constants.Appointment_Variables.Pending;
-                // Comment code: 140803
-                //Check appointment Availability
-                appointment.Status = Constants.Appointment_Variables.Approved;
                 _context.Appointments.Add(appointment);
+
+                // Comment code: 140803 check appointment availability
+
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(CheckAvailability),appointment);
             }
             ViewData["ClientId"] = new SelectList(_context.Clients, "ClientId", "ClientId", appointment.ClientId);
             ViewData["ContractorId"] = new SelectList(_context.Contractors, "Name", "ContractorId", appointment.ContractorId);
             return View(appointment);
         }
+
+
+        // WORKING SPACE  vvvvvvvvvvvv
+
+        public IActionResult CheckAvailability(Appointment appointmentToConfirm)
+        {
+            // Comment code: 140804
+            bool appointmentAvailable = false;
+            var contractor = _context.Contractors.Where(c => c.ContractorId == appointmentToConfirm.ContractorId)
+                    .Include(c => c.Address)
+                    .SingleOrDefault();
+            var startAddress = contractor.Address;
+            var appointmentsToday = _context.Appointments.Where(a => a.DateTime.Date == DateTime.Today).ToList();
+
+            foreach (var appointment in appointmentsToday)
+            {
+
+            }
+            appointmentAvailable = true;
+            if(appointmentAvailable)
+            {
+                return RedirectToAction(nameof(AppointmentConfirmed), appointmentToConfirm);
+            }
+            else
+            {
+                return RedirectToAction(nameof(SuggestAlternate), appointmentToConfirm);
+            }
+        }
+
+        public IActionResult SuggestAlternate(Appointment appointmentToSuggest)
+        {
+            // Get list of available appointments list of appointments where distanceToNext < 
+            // Send list in ViewData
+            return View(appointmentToSuggest);
+        }
+        public async Task<IActionResult> AppointmentConfirmed(Appointment appointment)
+        {
+            var confirmedAppointment = _context.Appointments.Where(a => a.ContractorId == appointment.ContractorId && a.DateTime == appointment.DateTime).SingleOrDefault();
+            confirmedAppointment.Status = Constants.Appointment_Variables.Approved;
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index),"Clients");
+            //return View(appointment);
+        }
+
+        //WORKING SPACE ^^^
+
 
         // GET: Appointments/Edit/5
         public async Task<IActionResult> Edit(DateTime? id)

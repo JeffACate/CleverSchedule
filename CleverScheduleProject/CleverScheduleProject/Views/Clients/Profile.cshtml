@@ -14,38 +14,43 @@
 @*MAIN*@
 @*Client section*@
 <div class="row col-sm-12">
-    <div class="border border-light text-dark col-5" style="background-color: cadetblue">
+    <div class="border border-light text-dark col-sm-4" style="background-color: cadetblue; max-width: 200px;">
         <dl class="row text-dark pt-2 " style="background-color: teal">
             <h4 class="col-sm-12 text-center">
                 @Html.DisplayFor(model => model.Name)
             </h4>
-            <hr class="col-sm-8 p-0 bg-white" />
+            <hr class="col-sm-8 bg-white" />
         </dl>
         <dl class="row">
-            <dt class="col-sm-4 font-weight-bold">
-                @Html.DisplayNameFor(model => model.Address)
+            <dt class="col-sm-12">
+                @Html.DisplayNameFor(model => model.Address):
             </dt>
-            <dd class="col-sm-8">
+            <dd class="col-sm-12" >
                 @Html.DisplayFor(model => model.Address.Street)
                 <br />
                 @Html.DisplayFor(model => model.Address.City),
                 @Html.DisplayFor(model => model.Address.State)
                 @Html.DisplayFor(model => model.Address.Zip)
             </dd>
-            <dt class="col-sm-4 font-weight-bold">
-                Next
+            <dt class="col-sm-12">
+                Next Appointment:
             </dt>
-            <dd class="col-sm-8">
-                12/12/20 12:30 PM
+            <dd class="col-sm-12">
+                @if (ViewBag.Appointments != null)
+                {
+                    @ViewBag.Appointments[0].DateTime.ToString("g")
+                    <br /><span>w/</span>
+                    @ViewBag.Appointments[0].Contractor.Name;
+                }
             </dd>
         </dl>
         <div class="row justify-content-center mb-2">
-            <a class="btn btn-dark" asp-controller="Appointments" asp-action="CreateAppointment">+ Schedule Appointment</a>
+            <a class="btn btn-dark col-sm-10 text-light" asp-controller="Appointments" asp-action="CreateAppointment">+ Appointment</a>
         </div>
     </div>
     @*Appointments Panel*@
-    <div class="col-7">
-        <table class="table table-secondary table-hover border border-light text-center">
+    <div class="col-md-8">
+        <table class="table text-center table-secondary table-hover border border-light text-center" >
             <thead class="bg-dark text-white">
                 <tr>
                     <th>
@@ -57,58 +62,31 @@
                         Contractor
                     </th>
                     <th>
-                        @*@Html.DisplayNameFor()*@
                         Status
-                    </th>
-                    <th>
                         @*@Html.DisplayNameFor()*@
                     </th>
                 </tr>
             </thead>
             <tbody>
-                @*@foreach ()*@
-                @*  {*@
-                <tr>
-                    <td>
-                        @*@Html.DisplayFor()*@
-                        12/12/20 12:30 PM
-                    </td>
-                    <td>
-                        @*@Html.DisplayFor()*@
-                        Jeff Cate
-                    </td>
-                    <td>
-                        @*@Html.DisplayFor()*@
-                        Approved
-                    </td>
-                    <td>
-                        @*@Html.DisplayFor()*@
-                    </td>
-                    @*<td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>*@
-                </tr>
-                <tr>
-                    <td>
-                        @*@Html.DisplayFor()*@
-                        12/19/20 12:30 PM
-                    </td>
-                    <td>
-                        @*@Html.DisplayFor()*@
-                        Jeff Cate
-                    </td>
-                    <td>
-                        @*@Html.DisplayFor()*@
-                        Approved
-                    </td>
-                    <td>
-                        @*@Html.DisplayFor()*@
-                    </td>
-                    @* }*@
-                    </tr>
-            </tbody>
+
+                @if (ViewBag.Appointments != null)
+                {
+                    @foreach (var item in @ViewBag.Appointments)
+                    {
+                        <tr>
+                            <td>
+                                @item.DateTime.ToString("g")
+                            </td>
+                            <td>
+                                @item.Contractor.Name
+                            </td>
+                            <td>
+                                @item.Status
+                            </td>
+                        </tr>
+                    }
+                }
+                </tbody>
         </table>
     </div>
 </div>

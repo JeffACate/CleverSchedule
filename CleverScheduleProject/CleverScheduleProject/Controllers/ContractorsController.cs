@@ -103,10 +103,12 @@ namespace CleverScheduleProject.Controllers
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var appointments = _context.Appointments
-                .Include(a => a.Client)
-                .Include(a => a.Contractor)
-                .Where(a => a.Contractor.IdentityUserId == userId)
-                .Where(a => a.Status == Constants.Appointment_Variables.Approved);
+                .Where(a => a.Contractor.IdentityUserId == userId) // my appointments
+                .Where(a => a.Status.Equals(Constants.Appointment_Variables.Approved))
+                .Where(a => a.DateTime.DayOfYear == DateTime.Today.DayOfYear) // for todays date
+                .Include(a => a.Client) // include client
+                .Include(a => a.Contractor); // include contractors;
+
             return View(await appointments.ToListAsync());
         }
         // GET: Contractors/Edit/5
