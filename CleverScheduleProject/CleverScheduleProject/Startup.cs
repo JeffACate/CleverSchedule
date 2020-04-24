@@ -33,6 +33,7 @@ namespace CleverScheduleProject
         {
             services.AddControllersWithViews();
             services.AddScoped<GeocodingService>();
+            services.AddScoped<TravelTimeService>();
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));

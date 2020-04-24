@@ -16,11 +16,13 @@ namespace CleverScheduleProject.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly GeocodingService _geocodingService;
+        private readonly TravelTimeService _travelTimeService;
 
-        public ClientsController(ApplicationDbContext context, GeocodingService geocodingService)
+        public ClientsController(ApplicationDbContext context, GeocodingService geocodingService, TravelTimeService travelTimeService)
         {
             _context = context;
             _geocodingService = geocodingService;
+            _travelTimeService = travelTimeService;
         }
 
         // GET: Clients
@@ -195,5 +197,14 @@ namespace CleverScheduleProject.Controllers
         {
             return _context.Clients.Any(e => e.ClientId == id);
         }
+
+        //Get travelTime
+        //public async Task<double> CallApi()
+        //{
+        //    double[] from = new double[] { 43.00708, -88.0041 };
+        //    double[] to = new double[] { 42.93541183, -87.97806167 };
+        //    double travelTime = await _travelTimeService.GetTravelTime(from,to);
+        //    return travelTime;
+        //}
     }
 }

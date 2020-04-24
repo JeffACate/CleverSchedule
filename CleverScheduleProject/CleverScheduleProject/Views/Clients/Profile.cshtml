@@ -13,8 +13,8 @@
 </div>
 @*MAIN*@
 @*Client section*@
-<div class="row col-sm-12">
-    <div class="border border-light text-dark col-sm-4" style="background-color: cadetblue; max-width: 200px;">
+<div class="row">
+    <div class="border border-light text-dark col-sm-3" style="background-color: cadetblue; max-width: 200px !important;">
         <dl class="row text-dark pt-2 " style="background-color: teal">
             <h4 class="col-sm-12 text-center">
                 @Html.DisplayFor(model => model.Name)
@@ -25,7 +25,7 @@
             <dt class="col-sm-12">
                 @Html.DisplayNameFor(model => model.Address):
             </dt>
-            <dd class="col-sm-12" >
+            <dd class="col-sm-12">
                 @Html.DisplayFor(model => model.Address.Street)
                 <br />
                 @Html.DisplayFor(model => model.Address.City),
@@ -36,7 +36,7 @@
                 Next Appointment:
             </dt>
             <dd class="col-sm-12">
-                @if (ViewBag.Appointments != null)
+                @if (ViewBag.Appointments.Count > 0)
                 {
                     @ViewBag.Appointments[0].DateTime.ToString("g")
                     <br /><span>w/</span>
@@ -49,46 +49,56 @@
         </div>
     </div>
     @*Appointments Panel*@
-    <div class="col-md-8">
-        <table class="table text-center table-secondary table-hover border border-light text-center" >
-            <thead class="bg-dark text-white">
-                <tr>
-                    <th>
-                        @*@Html.DisplayNameFor()*@
-                        Date
-                    </th>
-                    <th>
-                        @*@Html.DisplayNameFor()*@
-                        Contractor
-                    </th>
-                    <th>
-                        Status
-                        @*@Html.DisplayNameFor()*@
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
+<div class="col-sm-9">
+    <table class=" table text-center table-secondary table-hover table-striped border border-light text-center">
+        <thead class="bg-dark text-white">
+            <tr>
+                <th>
+                    Date
+                </th>
+                <th>
+                    Contractor
+                </th>
+                <th>
+                    Client
+                </th>
+                <th>
+                    Status
+                </th>
+            </tr>
+        </thead>
+        <tbody>
 
-                @if (ViewBag.Appointments != null)
+            @if (ViewBag.Appointments.Count > 0 )
+            {
+                @foreach (var item in @ViewBag.Appointments)
                 {
-                    @foreach (var item in @ViewBag.Appointments)
-                    {
-                        <tr>
-                            <td>
-                                @item.DateTime.ToString("g")
-                            </td>
-                            <td>
-                                @item.Contractor.Name
-                            </td>
-                            <td>
-                                @item.Status
-                            </td>
-                        </tr>
-                    }
+                    <tr>
+                        <td>
+                            @item.DateTime.ToString("g")
+                        </td>
+                        <td>
+                            @item.Contractor.Name
+                        </td>
+                        <td>
+                            @item.Client.Name
+                        </td>
+                        <td>
+                            @item.Status
+                        </td>
+                    </tr>
                 }
-                </tbody>
-        </table>
-    </div>
+            }
+        </tbody>
+    </table>
+
+
+</div>
+
+</div>
+
+<div class="row" hidden>
+    <a  id="RouteCall" class="btn col-sm-12 btn-danger text-light" >Make the Call</a>
 </div>
 @*MAIN*@
 @*body*@

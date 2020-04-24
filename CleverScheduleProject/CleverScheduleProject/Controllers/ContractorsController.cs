@@ -201,5 +201,19 @@ namespace CleverScheduleProject.Controllers
         {
             return _context.Contractors.Any(e => e.ContractorId == id);
         }
+
+        public async Task<Appointment[]> GetAppointments()
+        {
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var appointments = _context.Appointments
+                .Where(a => a.Contractor.IdentityUserId == userId) // my appointments
+                .Where(a => a.Status.Equals(Constants.Appointment_Variables.Approved))
+                .Where(a => a.DateTime.DayOfYear == DateTime.Today.DayOfYear) // for todays date
+                .Include(a => a.Client) // include client
+                .Include(a => a.Client.Address)
+                .Include(a => a.Contractor); // include contractors;
+            var appointmentsList = appointments.ToArray();
+            return appointmentsList;
+        }
     }
 }

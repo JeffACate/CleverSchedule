@@ -5,9 +5,46 @@
 }
 
 <h1>Schedule</h1>
+@*<div>
+    <iframe width="43vh" height="100vw" frameborder="0" src="https://www.bing.com/maps/embed?h=400&w=500&cp=39.654266777324054~-84.23492090704333&lvl=11&typ=d&sty=r&src=SHELL&FORM=MBEDV8" scrolling="no">
+    </iframe>
+    <div style="white-space: nowrap; text-align: center; width: 500px; padding: 6px 0;"hidden>
+        <a id="largeMapLink" target="_blank" href="https://www.bing.com/maps?cp=39.654266777324054~-84.23492090704333&amp;sty=r&amp;lvl=11&amp;FORM=MBEDLD">View Larger Map</a> &nbsp; | &nbsp;
+        <a id="dirMapLink" target="_blank" href="https://www.bing.com/maps/directions?cp=39.654266777324054~-84.23492090704333&amp;sty=r&amp;lvl=11&amp;rtp=~pos.39.654266777324054_-84.23492090704333____&amp;FORM=MBEDLD">Get Directions</a>
+    </div>
+</div>*@
+<div class="container">
+    <div class="row d-flex justify-content-center">
+        <div id='printoutPanel'></div>
 
-<table class="table table-light table-striped text-center">
-    <thead>
+        <div id='myMap' style="height: 43vh; width:100vw;" class="mb-2"></div>
+    </div>
+</div>
+<script type='text/javascript'>
+            function loadMapScenario() {
+                var map = new Microsoft.Maps.Map(document.getElementById('myMap'), {
+                /* No need to set credentials if already passed in URL */
+                    center: new Microsoft.Maps.Location(43.041999816894531,-87.906867980957031),
+                    mapTypeId: Microsoft.Maps.MapTypeId.Arial,
+                    zoom: 12
+                });
+                var pins = new Array();
+                @if(@ViewBag.jsAppointments!= null)
+                {
+                    var pins = new Appointment[@ViewBag.jsAppointments.length];
+                    for(var i = 0; i < ViewBag.jsAppointments.length; i++)
+                    {
+                        pins[i] = ViewBag.jsAppointments[i];
+                    }
+                }
+                for (var i = 0; i < pins.lenth; i++) {
+                    map.entities.push(pin[i]);
+                }
+            }
+</script>
+<script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?key=YourBingMapsKey&callback=loadMapScenario' async defer></script>
+<table class="table text-center table-secondary table-striped table-hover border border-light text-center">
+    <thead class="bg-dark text-white">
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.DateTime)
@@ -24,26 +61,27 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Client.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Contractor.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            @*<td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>*@
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Client.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Contractor.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                @*<td>
+                        @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                        @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                        @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                    </td>*@
+            </tr>
+        }
     </tbody>
 </table>

@@ -8,16 +8,20 @@ using Microsoft.EntityFrameworkCore;
 using CleverScheduleProject.Data;
 using CleverScheduleProject.Models;
 using System.Security.Claims;
+using CleverScheduleProject.Library;
 
 namespace CleverScheduleProject.Controllers
 {
     public class AppointmentsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly TravelTimeService _travelTimeService;
 
-        public AppointmentsController(ApplicationDbContext context)
+        public AppointmentsController(ApplicationDbContext context, TravelTimeService travelTimeService)
         {
             _context = context;
+            _travelTimeService = travelTimeService;
+            _travelTimeService = travelTimeService;
         }
 
         // GET: Appointments
@@ -92,7 +96,7 @@ namespace CleverScheduleProject.Controllers
 
         // WORKING SPACE  vvvvvvvvvvvv
 
-        public IActionResult CheckAvailability(Appointment appointmentToConfirm)
+        public async Task<IActionResult> CheckAvailability(Appointment appointmentToConfirm)
         {
             // Comment code: 140804
             bool appointmentAvailable = false;
@@ -100,13 +104,32 @@ namespace CleverScheduleProject.Controllers
                     .Include(c => c.Address)
                     .SingleOrDefault();
             var startAddress = contractor.Address;
-            var appointmentsToday = _context.Appointments.Where(a => a.DateTime.Date == DateTime.Today).ToList();
+            List<Models.Appointment> appointmentsToday = _context.Appointments.Where(a => a.DateTime.Date == DateTime.Today)
+                .Include(a => a.Client)
+                .Include(a => a.Client.Address)
+                .ToList();
 
-            foreach (var appointment in appointmentsToday)
+            foreach(var appointment in appointmentsToday)
+            {
+                DateTime endTime = appointment.DateTime.AddHours(1);
+                double travelTime = 60 * 60;
+                if(endTime.TimeOfDay > appointmentToConfirm.DateTime.TimeOfDay)
+                {
+                    appointmentAvailable = false;
+                   //double travelTime = await  _travelTimeService.GetTravelTime(appointment.Client.Address, appointmentToConfirm.Client.Address);
+
+                }
+                else
+                {
+                    appointmentAvailable = true;
+                }
+            }
+            startAddress = contractor.Address;
+            foreach(var appointment in appointmentsToday)
             {
 
             }
-            appointmentAvailable = true;
+            //appointmentAvailable = true;
             if(appointmentAvailable)
             {
                 return RedirectToAction(nameof(AppointmentConfirmed), appointmentToConfirm);

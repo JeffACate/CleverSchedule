@@ -1,0 +1,35 @@
+﻿@model CleverScheduleProject.Models.Appointment
+
+@{
+    ViewData["Title"] = "SuggestAlternate";
+}
+
+<h1>SuggestAlternate</h1>
+
+<div>
+    <h4>Appointment</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Status)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Client)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Client.ClientId)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Contractor)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Contractor.ContractorId)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a class="text-warning" asp-action="Profile" asp-controller="Clients">Back to List</a>
+</div>
