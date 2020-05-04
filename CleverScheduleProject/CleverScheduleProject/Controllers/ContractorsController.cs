@@ -107,9 +107,12 @@ namespace CleverScheduleProject.Controllers
                 .Where(a => a.Status.Equals(Constants.Appointment_Variables.Approved))
                 .Where(a => a.DateTime.DayOfYear == DateTime.Today.DayOfYear) // for todays date
                 .Include(a => a.Client) // include client
-                .Include(a => a.Contractor); // include contractors;
+                .Include(a => a.Contractor)
+                .Include(a => a.Client.Address)
+                .Include(a => a.Contractor.Address)
+                .ToList(); // include contractors;
 
-            return View(await appointments.ToListAsync());
+            return View(appointments);
         }
         // GET: Contractors/Edit/5
         public async Task<IActionResult> Edit(int? id)

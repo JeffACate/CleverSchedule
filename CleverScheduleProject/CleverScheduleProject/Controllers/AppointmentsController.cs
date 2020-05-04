@@ -93,9 +93,6 @@ namespace CleverScheduleProject.Controllers
             return View(appointment);
         }
 
-
-        // WORKING SPACE  vvvvvvvvvvvv
-
         public async Task<IActionResult> CheckAvailability(Appointment appointmentToConfirm)
         {
             // Comment code: 140804
@@ -112,24 +109,23 @@ namespace CleverScheduleProject.Controllers
             foreach(var appointment in appointmentsToday)
             {
                 DateTime endTime = appointment.DateTime.AddHours(1);
-                double travelTime = 60 * 60;
-                if(endTime.TimeOfDay > appointmentToConfirm.DateTime.TimeOfDay)
-                {
-                    appointmentAvailable = false;
-                   //double travelTime = await  _travelTimeService.GetTravelTime(appointment.Client.Address, appointmentToConfirm.Client.Address);
+                //if(endTime.TimeOfDay > appointmentToConfirm.DateTime.TimeOfDay)
+                //{
+                //    appointmentAvailable = false;
+                //   //double travelTime = await  _travelTimeService.GetTravelTime(appointment.Client.Address, appointmentToConfirm.Client.Address);
 
-                }
-                else
-                {
-                    appointmentAvailable = true;
-                }
+                //}
+                //else
+                //{
+                //    appointmentAvailable = true;
+                //}
             }
             startAddress = contractor.Address;
             foreach(var appointment in appointmentsToday)
             {
 
             }
-            //appointmentAvailable = true;
+            appointmentAvailable = true;
             if(appointmentAvailable)
             {
                 return RedirectToAction(nameof(AppointmentConfirmed), appointmentToConfirm);
@@ -154,9 +150,6 @@ namespace CleverScheduleProject.Controllers
             return RedirectToAction(nameof(Index),"Clients");
             //return View(appointment);
         }
-
-        //WORKING SPACE ^^^
-
 
         // GET: Appointments/Edit/5
         public async Task<IActionResult> Edit(DateTime? id)

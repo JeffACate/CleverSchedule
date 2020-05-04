@@ -12,10 +12,11 @@
 
 #API_Keys
 CleverScheduleProject/CleverScheduleProject/Constants/API_Keys.cs
+CleverScheduleProject/CleverScheduleProject/wwwroot/js/JavaScriptKey.js
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
-
+git 
 # Mono auto generated files
 mono_crash.*
 

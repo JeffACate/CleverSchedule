@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CleverScheduleProject.Models.Appointment>
+﻿@model List<CleverScheduleProject.Models.Appointment>
 
 @{
     ViewData["Title"] = "Schedule";
@@ -6,13 +6,13 @@
 
 <h1>Schedule</h1>
 @*<div>
-    <iframe width="43vh" height="100vw" frameborder="0" src="https://www.bing.com/maps/embed?h=400&w=500&cp=39.654266777324054~-84.23492090704333&lvl=11&typ=d&sty=r&src=SHELL&FORM=MBEDV8" scrolling="no">
-    </iframe>
-    <div style="white-space: nowrap; text-align: center; width: 500px; padding: 6px 0;"hidden>
-        <a id="largeMapLink" target="_blank" href="https://www.bing.com/maps?cp=39.654266777324054~-84.23492090704333&amp;sty=r&amp;lvl=11&amp;FORM=MBEDLD">View Larger Map</a> &nbsp; | &nbsp;
-        <a id="dirMapLink" target="_blank" href="https://www.bing.com/maps/directions?cp=39.654266777324054~-84.23492090704333&amp;sty=r&amp;lvl=11&amp;rtp=~pos.39.654266777324054_-84.23492090704333____&amp;FORM=MBEDLD">Get Directions</a>
-    </div>
-</div>*@
+        <iframe width="43vh" height="100vw" frameborder="0" src="https://www.bing.com/maps/embed?h=400&w=500&cp=39.654266777324054~-84.23492090704333&lvl=11&typ=d&sty=r&src=SHELL&FORM=MBEDV8" scrolling="no">
+        </iframe>
+        <div style="white-space: nowrap; text-align: center; width: 500px; padding: 6px 0;"hidden>
+            <a id="largeMapLink" target="_blank" href="https://www.bing.com/maps?cp=39.654266777324054~-84.23492090704333&amp;sty=r&amp;lvl=11&amp;FORM=MBEDLD">View Larger Map</a> &nbsp; | &nbsp;
+            <a id="dirMapLink" target="_blank" href="https://www.bing.com/maps/directions?cp=39.654266777324054~-84.23492090704333&amp;sty=r&amp;lvl=11&amp;rtp=~pos.39.654266777324054_-84.23492090704333____&amp;FORM=MBEDLD">Get Directions</a>
+        </div>
+    </div>*@
 <div class="container">
     <div class="row d-flex justify-content-center">
         <div id='printoutPanel'></div>
@@ -21,42 +21,55 @@
     </div>
 </div>
 <script type='text/javascript'>
-            function loadMapScenario() {
-                var map = new Microsoft.Maps.Map(document.getElementById('myMap'), {
-                /* No need to set credentials if already passed in URL */
-                    center: new Microsoft.Maps.Location(43.041999816894531,-87.906867980957031),
-                    mapTypeId: Microsoft.Maps.MapTypeId.Arial,
-                    zoom: 12
-                });
-                var pins = new Array();
-                @if(@ViewBag.jsAppointments!= null)
-                {
-                    var pins = new Appointment[@ViewBag.jsAppointments.length];
-                    for(var i = 0; i < ViewBag.jsAppointments.length; i++)
-                    {
-                        pins[i] = ViewBag.jsAppointments[i];
-                    }
-                }
-                for (var i = 0; i < pins.lenth; i++) {
-                    map.entities.push(pin[i]);
-                }
-            }
+    function GetMap() {
+        var map = new Microsoft.Maps.Map('#myMap', {
+            credentials: javaScriptKey,
+            center: new Microsoft.Maps.Location(43.408771514892578, -88.1811294555664),
+            zoom: 8
+        });
+
+        
+        //Add the pushpin to the map
+        map.entities.push(pin);
+        var center = map.getCenter();
+        console.log("map loaded");
+        var count = 0;
+
+        var startLocation = new Microsoft.Maps.Location(@Model[0].Contractor.Address.Lat,@Model[0].Contractor.Address.Lon);
+        //Create custom Pushpin
+        var pin = new Microsoft.Maps.Pushpin(startLocation);
+        count++;
+        //Add the pushpin to the map
+        map.entities.push(pin);
+        
+        console.log("center of map added");
+
+        for (var i = 0; i < appointmentsToPost.length; i++) {
+            var loc = new Microsoft.Maps.Location(appointmentsToPost[i][0], appointmentsToPost[i][1]);
+            var pin = new Microsoft.Maps.Pushpin(loc, {
+                title: 'Client: ' + count.toString(),
+                text: count.toString()
+            });
+            count++;
+            map.entities.push(pin);
+        }
+    }
 </script>
-<script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?key=YourBingMapsKey&callback=loadMapScenario' async defer></script>
+<script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap' async defer></script>
 <table class="table text-center table-secondary table-striped table-hover border border-light text-center">
     <thead class="bg-dark text-white">
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.DateTime)
+                @Html.DisplayNameFor(model => model[0].DateTime)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Client)
+                @Html.DisplayNameFor(model => model[0].Client)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Contractor)
+                @Html.DisplayNameFor(model => model[0].Contractor)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Status)
+                @Html.DisplayNameFor(model => model[0].Status)
             </th>
         </tr>
     </thead>
