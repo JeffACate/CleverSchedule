@@ -28,29 +28,37 @@
             zoom: 8
         });
 
-        
-        //Add the pushpin to the map
-        map.entities.push(pin);
-        var center = map.getCenter();
-        console.log("map loaded");
         var count = 0;
-
-        var startLocation = new Microsoft.Maps.Location(@Model[0].Contractor.Address.Lat,@Model[0].Contractor.Address.Lon);
-        //Create custom Pushpin
-        var pin = new Microsoft.Maps.Pushpin(startLocation);
-        count++;
-        //Add the pushpin to the map
-        map.entities.push(pin);
         
-        console.log("center of map added");
-
-        for (var i = 0; i < appointmentsToPost.length; i++) {
-            var loc = new Microsoft.Maps.Location(appointmentsToPost[i][0], appointmentsToPost[i][1]);
-            var pin = new Microsoft.Maps.Pushpin(loc, {
-                title: 'Client: ' + count.toString(),
-                text: count.toString()
-            });
+        console.log(appointmentsToPost.length);
+        console.log(appointmentsToPost);
+        if(@Model.Count > 1) {
+            var startLocation = new Microsoft.Maps.Location(@Model[0].Contractor.Address.Lat,@Model[0].Contractor.Address.Lon);
+            var pin = new Microsoft.Maps.Pushpin(startLocation);
+            
+            //Create custom Pushpin
             count++;
+            
+            //Add the pushpin to the map
+            map.entities.push(pin);
+
+            for (var i = 0; i < appointmentsToPost.length; i++) {
+                var loc = new Microsoft.Maps.Location(appointmentsToPost[i][0], appointmentsToPost[i][1]);
+                var pin = new Microsoft.Maps.Pushpin(loc, {
+                    title: 'Client: ' + count.toString(),
+                    text: count.toString()
+                });
+                count++;
+                map.entities.push(pin);
+            }
+        }else {
+            var startLocation = map.getCenter();
+            var pin = new Microsoft.Maps.Pushpin(startLocation);
+
+            //Create custom Pushpin
+            count++;
+            
+            //Add the pushpin to the map
             map.entities.push(pin);
         }
     }
@@ -74,27 +82,30 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @if (Model != null)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DateTime)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Client.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Contractor.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Status)
-                </td>
-                @*<td>
-                        @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                        @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                        @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-                    </td>*@
-            </tr>
+            @for (int i = 1; i < Model.Count; i++)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => Model[i].DateTime)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => Model[i].Client.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => Model[i].Contractor.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => Model[i].Status)
+                    </td>
+                    @*<td>
+                            @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                            @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                            @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                        </td>*@
+                </tr>
+            }
         }
     </tbody>
 </table>

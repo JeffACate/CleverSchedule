@@ -99,7 +99,7 @@ namespace CleverScheduleProject.Controllers
             return View(contractor);
         }
 
-        public async Task<IActionResult> Schedule()
+        public IActionResult Schedule()
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var appointments = _context.Appointments
@@ -111,7 +111,17 @@ namespace CleverScheduleProject.Controllers
                 .Include(a => a.Client.Address)
                 .Include(a => a.Contractor.Address)
                 .ToList(); // include contractors;
+            
+            var contractor = _context.Contractors.Where(c => c.IdentityUserId == userId)
+                .Include(c => c.Address).FirstOrDefault();
+            var contractorAppointment = new Appointment()
+            {
+                Contractor = contractor
+            };
+            appointments.Insert(0, contractorAppointment);
 
+
+            ViewData["Contractor"] = contractor;
             return View(appointments);
         }
         // GET: Contractors/Edit/5

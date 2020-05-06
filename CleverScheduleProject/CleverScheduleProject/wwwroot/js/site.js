@@ -21,11 +21,8 @@ $(document).ready( function () {
                 pins.push(pin);
             } 
             appointmentsToPost = pins;
-            console.log("Api coords start")
             for (var i = 0; i < appointmentsToPost.length; i++) {
-                console.log(appointmentsToPost[i]);
             }
-            console.log("Api coords end");
         }
     })
 });
