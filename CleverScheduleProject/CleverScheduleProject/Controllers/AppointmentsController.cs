@@ -96,29 +96,24 @@ namespace CleverScheduleProject.Controllers
         public async Task<IActionResult> CheckAvailability(Appointment appointmentToConfirm)
         {
             // Comment code: 140804
-            bool appointmentAvailable = false;
-            var contractor = _context.Contractors.Where(c => c.ContractorId == appointmentToConfirm.ContractorId)
+            bool appointmentAvailable = false; //appointment unavailable at first
+
+            var contractor = _context.Contractors.Where(c => c.ContractorId == appointmentToConfirm.ContractorId) // Contractor Address
                     .Include(c => c.Address)
                     .SingleOrDefault();
-            var startAddress = contractor.Address;
-            List<Models.Appointment> appointmentsToday = _context.Appointments.Where(a => a.DateTime.Date == DateTime.Today)
+
+            var startAddress = contractor.Address; // Starting Address = Contractor Address at first
+
+            List<Appointment> appointmentsToday = _context.Appointments.Where(a => a.DateTime.Date == DateTime.Today) 
                 .Include(a => a.Client)
                 .Include(a => a.Client.Address)
                 .ToList();
 
-            foreach(var appointment in appointmentsToday)
+            List<Appointment> availableAppointments = new List<Appointment>();
+            
+            foreach (var appointment in appointmentsToday)
             {
-                DateTime endTime = appointment.DateTime.AddHours(1);
-                //if(endTime.TimeOfDay > appointmentToConfirm.DateTime.TimeOfDay)
-                //{
-                //    appointmentAvailable = false;
-                //   //double travelTime = await  _travelTimeService.GetTravelTime(appointment.Client.Address, appointmentToConfirm.Client.Address);
-
-                //}
-                //else
-                //{
-                //    appointmentAvailable = true;
-                //}
+                
             }
             startAddress = contractor.Address;
             foreach(var appointment in appointmentsToday)
