@@ -81,8 +81,14 @@ namespace CleverScheduleProject.Controllers
                     .SingleOrDefault();
                 appointment.ClientId = client.ClientId;
                 appointment.Status = Constants.Appointment_Variables.Pending;
-                _context.Appointments.Add(appointment);
-
+                try
+                {
+                    _context.Appointments.Add(appointment);
+                }
+                catch(Exception e)
+                {
+                    RedirectToAction(nameof(InvalidAppointment), appointment);
+                }
                 // Comment code: 140803 check appointment availability
 
                 await _context.SaveChangesAsync();
@@ -95,6 +101,7 @@ namespace CleverScheduleProject.Controllers
 
         public async Task<IActionResult> CheckAvailability(Appointment appointmentToConfirm)
         {
+            return RedirectToAction(nameof(AppointmentConfirmed), appointmentToConfirm);
             // Comment code: 140804
             bool appointmentAvailable = false; //appointment unavailable at first
 
