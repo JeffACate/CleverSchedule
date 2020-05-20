@@ -68,9 +68,8 @@ namespace CleverScheduleProject.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateAppointment([Bind("DateTime,ContractorId")] Appointment appointment)
+        public async Task<IActionResult> CreateAppointment([Bind("DateTime,ContractorId")] Appointment newAppointment)
         {
-
             if (ModelState.IsValid)
             {
                 var applicationDbContext = _context.Clients.Include(c => c.IdentityUser);
@@ -79,29 +78,34 @@ namespace CleverScheduleProject.Controllers
                     .Include(c => c.Address)
                     .Include(c => c.IdentityUser)
                     .SingleOrDefault();
-                appointment.ClientId = client.ClientId;
-                appointment.Status = Constants.Appointment_Variables.Pending;
-                try
+                newAppointment.ClientId = client.ClientId;
+                newAppointment.Status = Constants.Appointment_Variables.Pending;
+
+                var allAppointments = _context.Appointments;
+                foreach (var appointment in allAppointments)
                 {
-                    _context.Appointments.Add(appointment);
+                    if(appointment.DateTime == newAppointment.DateTime)
+                    {
+                        RedirectToAction(nameof(InvalidAppointment), newAppointment);
+                    }
                 }
-                catch(Exception e)
-                {
-                    RedirectToAction(nameof(InvalidAppointment), appointment);
-                }
+                _context.Appointments.Add(newAppointment);
+                
+
+                return View(await applicationDbContext.ToListAsync());
+                RedirectToAction(nameof(InvalidAppointment), newAppointment);
                 // Comment code: 140803 check appointment availability
 
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(CheckAvailability),appointment);
+                return RedirectToAction(nameof(CheckAvailability),newAppointment);
             }
-            ViewData["ClientId"] = new SelectList(_context.Clients, "ClientId", "ClientId", appointment.ClientId);
-            ViewData["ContractorId"] = new SelectList(_context.Contractors, "Name", "ContractorId", appointment.ContractorId);
-            return View(appointment);
+            ViewData["ClientId"] = new SelectList(_context.Clients, "ClientId", "ClientId", newAppointment.ClientId);
+            ViewData["ContractorId"] = new SelectList(_context.Contractors, "Name", "ContractorId", newAppointment.ContractorId);
+            return View(newAppointment);
         }
 
         public async Task<IActionResult> CheckAvailability(Appointment appointmentToConfirm)
         {
-            return RedirectToAction(nameof(AppointmentConfirmed), appointmentToConfirm);
             // Comment code: 140804
             bool appointmentAvailable = false; //appointment unavailable at first
 
@@ -137,7 +141,10 @@ namespace CleverScheduleProject.Controllers
                 return RedirectToAction(nameof(SuggestAlternate), appointmentToConfirm);
             }
         }
-
+        public IActionResult InvalidAppointment()
+        {
+            return View();
+        }
         public IActionResult SuggestAlternate(Appointment appointmentToSuggest)
         {
             // Get list of available appointments list of appointments where distanceToNext < 
@@ -146,6 +153,7 @@ namespace CleverScheduleProject.Controllers
         }
         public async Task<IActionResult> AppointmentConfirmed(Appointment appointment)
         {
+            return View();
             var confirmedAppointment = _context.Appointments.Where(a => a.ContractorId == appointment.ContractorId && a.DateTime == appointment.DateTime).SingleOrDefault();
             confirmedAppointment.Status = Constants.Appointment_Variables.Approved;
             await _context.SaveChangesAsync();
