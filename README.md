@@ -17,7 +17,6 @@ Snippet:<br/>
 </div>
 ```
 
-
 - [ ] Code: 140801 <br/>
     Category: Identity User<br/>
     Descrption: Role Seeding<br/>
@@ -40,9 +39,10 @@ Snippet:<br/>
 Category: Hard Coded Information<br/>
 Description: Contractor start location<br/>
 Purpose: <br/>
-    1. Create functionality to create seperate Client - Contractor relationship.<br/>
-    2. Set start location to Contractor address where ContractorId == Clients.ContractorId<br/>
+    1 Create functionality to create seperate Client - Contractor relationship.<br/>
+    2 Set start location to Contractor address where ContractorId == Clients.ContractorId<br/>
 Snippet: <br/>
+
 ```
 var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);<br/>
 var client = _context.Clients.Where(c => c.IdentityUserId == userId)<br/>
