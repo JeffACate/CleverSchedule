@@ -11,10 +11,10 @@ Purpose: Add to Admin view to select what type of account to create (Admin/Contr
 Snippet:<br/>
 
 ```
-<p> <div class="form-group">
+<div class="form-group">
     <label asp-for="Input.Role"></label><br/>
     <select asp-for="Input.Role" class="form-control" aps-items="@Modul.Roles"></select>
-</div></p>
+</div>
 ```
 
 
@@ -36,14 +36,14 @@ Description: Check appointment availability<br/>
 Purpose: Create appointment algorythm<br/>
 Snippet:<br/>
 
-Code: 140804 (COMPLETED)<br/>
+- [x] Code: 140804 <br/>
 Category: Hard Coded Information<br/>
 Description: Contractor start location<br/>
 Purpose: <br/>
     1. Create functionality to create seperate Client - Contractor relationship.<br/>
     2. Set start location to Contractor address where ContractorId == Clients.ContractorId<br/>
 Snippet: <br/>
-
+```
 var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);<br/>
 var client = _context.Clients.Where(c => c.IdentityUserId == userId)<br/>
     .Include(c => c.Address)<br/>
@@ -52,5 +52,5 @@ var client = _context.Clients.Where(c => c.IdentityUserId == userId)<br/>
     .SingleOrDefault();<br/>
 
 Address startAddress = client.Contractor.Address;<br/>
-
+```
 
