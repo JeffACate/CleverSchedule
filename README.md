@@ -17,38 +17,38 @@ Snippet:
 
 
 - [ ] Code: 1408001 <br/>
-    Category: Identity User
-    Descrption: Role Seeding
-    Purpose: Update Seeded data to prevent Identity role 'bug'
-    Snippet:
+    Category: Identity User<br/>
+    Descrption: Role Seeding<br/>
+    Purpose: Update Seeded data to prevent Identity role 'bug'<br/>
+    Snippet:<br/>
 
-- [ ] Code: 140802
-Category: Identity User
-Description: Role assignment during registration
-Purpose: Encapsulate user Role. To find better way to limit client ability to assign role.
+- [ ] Code: 140802<br/>
+Category: Identity User<br/>
+Description: Role assignment during registration<br/>
+Purpose: Encapsulate user Role. To find better way to limit client ability to assign role.<br/>
 Snippet: 
 
 - [ ] Code: 140803
-Category: User Story
-Description: Check appointment availability
-Purpose: Create appointment algorythm
-Snippet:
+Category: User Story<br/>
+Description: Check appointment availability<br/>
+Purpose: Create appointment algorythm<br/>
+Snippet:<br/>
 
-Code: 140804 (COMPLETED)
-Category: Hard Coded Information
-Description: Contractor start location
-Purpose: 
-    1. Create functionality to create seperate Client - Contractor relationship.
-    2. Set start location to Contractor address where ContractorId == Clients.ContractorId
-Snippet: 
+Code: 140804 (COMPLETED)<br/>
+Category: Hard Coded Information<br/>
+Description: Contractor start location<br/>
+Purpose: <br/>
+    1. Create functionality to create seperate Client - Contractor relationship.<br/>
+    2. Set start location to Contractor address where ContractorId == Clients.ContractorId<br/>
+Snippet: <br/>
 
-var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-var client = _context.Clients.Where(c => c.IdentityUserId == userId)
-    .Include(c => c.Address)
-    .Include(c => c.Contractor)
-    .Include(co => c.Contractor.Address)
-    .SingleOrDefault();
+var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);<br/>
+var client = _context.Clients.Where(c => c.IdentityUserId == userId)<br/>
+    .Include(c => c.Address)<br/>
+    .Include(c => c.Contractor)<br/>
+    .Include(co => c.Contractor.Address)<br/>
+    .SingleOrDefault();<br/>
 
-Address startAddress = client.Contractor.Address;
+Address startAddress = client.Contractor.Address;<br/>
 
 
