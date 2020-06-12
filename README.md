@@ -17,6 +17,7 @@
 #### CURRENT: Scheduling algorithm 140803
 
 - [ ] Code: 140800<br/>
+
     Category: Identity User<br/>
     Description: Snippet for Identity user select list<br/>
     Purpose: Add to Admin view to select what type of account to create (Admin/Contractor)<br/>
@@ -54,14 +55,14 @@
         1. Create functionality to create seperate Client - Contractor relationship.<br/>
         2. Set start location to Contractor address where ContractorId == Clients.ContractorId<br/>
     Snippet: <br/>
-```
-var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-var client = _context.Clients.Where(c => c.IdentityUserId == userId)
-    .Include(c => c.Address)
-    .Include(c => c.Contractor
-    .Include(co => c.Contractor.Address
-    .SingleOrDefault();
+    ```
+    var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+    var client = _context.Clients.Where(c => c.IdentityUserId == userId)
+        .Include(c => c.Address)
+        .Include(c => c.Contractor
+        .Include(co => c.Contractor.Address
+        .SingleOrDefault();
 
-Address startAddress = client.Contractor.Address;
+    Address startAddress = client.Contractor.Address;
 ```
 
