@@ -6,7 +6,7 @@ This application is centered around a scheduling algorithm. This algorithm will 
 A client will be able to log in and see a list of their future appointments and sidebar with their information and upcoming appointment. 
 
 A contractor will be able to log in and see a schedule of confirmed appointments for the day and a map of locations for those appointments.
-<div style="max-width: 26vwidth">
+<div style="max-width: 26vw">
     <hr/>
 </div>
 ### Technologies: 
