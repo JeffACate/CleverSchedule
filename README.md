@@ -16,11 +16,11 @@ Snippet:
 </div>
 
 
--[ ] Code: 1408001 <br/>
-Category: Identity User
-Descrption: Role Seeding
-Purpose: Update Seeded data to prevent Identity role 'bug'
-Snippet:
+- [ ] Code: 1408001 <br/>
+    Category: Identity User
+    Descrption: Role Seeding
+    Purpose: Update Seeded data to prevent Identity role 'bug'
+    Snippet:
 
 - [ ] Code: 140802
 Category: Identity User
