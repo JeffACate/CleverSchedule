@@ -21,7 +21,6 @@ namespace CleverScheduleProject.Controllers
         {
             _context = context;
             _travelTimeService = travelTimeService;
-            _travelTimeService = travelTimeService;
         }
 
         // GET: Appointments

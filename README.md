@@ -1,8 +1,15 @@
 # CleverSchedule
 
+This application is centered around a scheduling algorithm. This algorithm will check an appointment's availability based on the appointment's date, time, and drive time.
+
+## Use Case: 
+A client will be able to log in and see a list of their future appointments and sidebar with their information and upcoming appointment. 
+
+A contractor will be able to log in and see a schedule of confirmed appointments for the day and a map of locations for those appointments.
+
 ### Technologies: 
 
-* DB - Code first:
+* DB (Code first):
   * SQL Server database
   * Entity Framework 
 
@@ -23,7 +30,7 @@
     Description: Snippet for Identity user select list<br/>
     Purpose: Add to Admin view to select what type of account to create (Admin/Contractor)<br/>
     Snippet:<br/>
-    ```html
+    ```
     <div class="form-group">
         <label asp-for="Input.Role"></label>
         <select asp-for="Input.Role" class="form-control" aps-items="@Modul.Roles"></select>
@@ -44,7 +51,7 @@
 
 - [ ] Code: 140803<br />
 
-    Category: User Story<br/>
+    Category: Algorithms<br/>
     Description: Check appointment availability<br/>
     Purpose: Create appointment algorythm<br/>
 
