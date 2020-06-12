@@ -2,8 +2,9 @@
 
 ### Technologies: 
 
-* DB:
+* DB - Code first:
   * SQL Server database
+  * Entity Framework 
 
 * Back-End: 
   * ASP.Net Core MVC
@@ -64,5 +65,5 @@
         .SingleOrDefault();
 
     Address startAddress = client.Contractor.Address;
-```
+    ```
 
