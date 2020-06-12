@@ -10,10 +10,12 @@ Description: Snippet for Identity user select list<br/>
 Purpose: Add to Admin view to select what type of account to create (Admin/Contractor)<br/>
 Snippet:<br/>
 
-<!-- <div class="form-group">
+```
+<p> <div class="form-group">
     <label asp-for="Input.Role"></label><br/>
     <select asp-for="Input.Role" class="form-control" aps-items="@Modul.Roles"></select>
-</div> -->
+</div></p>
+```
 
 
 - [ ] Code: 140801 <br/>
