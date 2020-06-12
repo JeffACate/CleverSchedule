@@ -4,7 +4,7 @@
 
 DESCRIPTION: A list of coded comments to use to label area's in code or snippets that I will implement later.
 
-Code: (complete)
+- [ ] Code: 140800
 Category: Identity User
 Description: Snippet for Identity user select list
 Purpose: Add to Admin view to select what type of account to create (Admin/Contractor)
@@ -16,7 +16,7 @@ Snippet:
 </div>
 
 
-- [ ] Code: 1408001
+-[ ] Code: 1408001 <br/>
 Category: Identity User
 Descrption: Role Seeding
 Purpose: Update Seeded data to prevent Identity role 'bug'
