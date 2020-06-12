@@ -16,19 +16,19 @@ Snippet:
 </div>
 
 
--[ ] Code: 1408001
+- [ ] Code: 1408001
 Category: Identity User
 Descrption: Role Seeding
 Purpose: Update Seeded data to prevent Identity role 'bug'
 Snippet:
 
--[ ] Code: 140802
+- [ ] Code: 140802
 Category: Identity User
 Description: Role assignment during registration
 Purpose: Encapsulate user Role. To find better way to limit client ability to assign role.
 Snippet: 
 
--[ ] Code: 140803
+- [ ] Code: 140803
 Category: User Story
 Description: Check appointment availability
 Purpose: Create appointment algorythm
