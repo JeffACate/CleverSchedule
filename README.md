@@ -23,7 +23,7 @@
     Description: Snippet for Identity user select list<br/>
     Purpose: Add to Admin view to select what type of account to create (Admin/Contractor)<br/>
     Snippet:<br/>
-    ```C#
+    ```html
     <div class="form-group">
         <label asp-for="Input.Role"></label>
         <select asp-for="Input.Role" class="form-control" aps-items="@Modul.Roles"></select>
