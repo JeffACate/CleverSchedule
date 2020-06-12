@@ -15,7 +15,7 @@
   * Bootstrap 4 
 
 ### To do: 
-#### CURRENT: Scheduling algorithm 140803
+  #### Current: Scheduling algorithm 140803
 
 - [ ] Code: 140800<br/>
 
