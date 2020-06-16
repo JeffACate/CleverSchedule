@@ -87,10 +87,7 @@ namespace CleverScheduleProject.Controllers
                 }
                 _context.Appointments.Add(newAppointment);
 
-                return View(await applicationDbContext.ToListAsync());
-                RedirectToAction(nameof(InvalidAppointment), newAppointment);
                 // Comment code: 140803 check appointment availability
-
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(CheckAvailability),newAppointment);
             }
@@ -140,8 +137,8 @@ namespace CleverScheduleProject.Controllers
             Appointment confirmedAppointment = _context.Appointments.Where(a => a.ContractorId == appointment.ContractorId && a.DateTime == appointment.DateTime).SingleOrDefault();
             confirmedAppointment.Status = Constants.Appointment_Variables.Approved;
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index),"Clients");
-            //return View(appointment);
+            //return RedirectToAction(nameof(Index),"Clients");
+            return View(confirmedAppointment);
         }
 
         // GET: Appointments/Edit/5
@@ -152,7 +149,7 @@ namespace CleverScheduleProject.Controllers
                 return NotFound();
             }
 
-            var appointment = await _context.Appointments.FindAsync(id);
+            Appointment appointment = await _context.Appointments.FindAsync(id);
             if (appointment == null)
             {
                 return NotFound();
