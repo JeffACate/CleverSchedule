@@ -12,6 +12,5 @@ namespace CleverScheduleProject.Constants
         public static string Pending = "Pending";
         public static string Client = "Client";
         public static string Contractor = "Contractor";
-        
     }
 }

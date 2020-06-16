@@ -53,15 +53,12 @@ namespace CleverScheduleProject.Controllers
         // GET: Appointments/Create
         public IActionResult CreateAppointment()
         {
-            
             ViewData["ClientId"] = new SelectList(_context.Clients, "ClientId", "ClientId");
             ViewData["Contractors"]= new SelectList(_context.Contractors, "ContractorsId", "ContractorId");
             return View();
         }
 
         //CREATE APT
-
-
         // POST: Appointments/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -89,7 +86,6 @@ namespace CleverScheduleProject.Controllers
                     }
                 }
                 _context.Appointments.Add(newAppointment);
-                
 
                 return View(await applicationDbContext.ToListAsync());
                 RedirectToAction(nameof(InvalidAppointment), newAppointment);
@@ -108,28 +104,17 @@ namespace CleverScheduleProject.Controllers
             // Comment code: 140804
             bool appointmentAvailable = false; //appointment unavailable at first
 
-            var contractor = _context.Contractors.Where(c => c.ContractorId == appointmentToConfirm.ContractorId) // Contractor Address
+            Contractor contractor = _context.Contractors.Where(c => c.ContractorId == appointmentToConfirm.ContractorId) // Contractor Address
                     .Include(c => c.Address)
                     .SingleOrDefault();
 
-            var startAddress = contractor.Address; // Starting Address = Contractor Address at first
+            Address startAddress = contractor.Address; // Starting Address = Contractor Address at first
 
             List<Appointment> appointmentsToday = _context.Appointments.Where(a => a.DateTime.Date == DateTime.Today) 
                 .Include(a => a.Client)
                 .Include(a => a.Client.Address)
                 .ToList();
-
-            List<Appointment> availableAppointments = new List<Appointment>();
             
-            foreach (var appointment in appointmentsToday)
-            {
-                
-            }
-            startAddress = contractor.Address;
-            foreach(var appointment in appointmentsToday)
-            {
-
-            }
             appointmentAvailable = true;
             if(appointmentAvailable)
             {
@@ -152,8 +137,7 @@ namespace CleverScheduleProject.Controllers
         }
         public async Task<IActionResult> AppointmentConfirmed(Appointment appointment)
         {
-            return View();
-            var confirmedAppointment = _context.Appointments.Where(a => a.ContractorId == appointment.ContractorId && a.DateTime == appointment.DateTime).SingleOrDefault();
+            Appointment confirmedAppointment = _context.Appointments.Where(a => a.ContractorId == appointment.ContractorId && a.DateTime == appointment.DateTime).SingleOrDefault();
             confirmedAppointment.Status = Constants.Appointment_Variables.Approved;
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index),"Clients");

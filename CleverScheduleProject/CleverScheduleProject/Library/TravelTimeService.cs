@@ -32,10 +32,8 @@ namespace CleverScheduleProject.Library
 
                 //Do something with the result.
                 travelTime = Convert.ToDouble(result.TravelDuration);
-
             }
             return travelTime;
-
         }
     }
 }
