@@ -110,6 +110,8 @@ namespace CleverScheduleProject.Controllers
             List<Appointment> appointmentsToday = _context.Appointments.Where(a => a.DateTime.Date == DateTime.Today) 
                 .Include(a => a.Client)
                 .Include(a => a.Client.Address)
+                .Include(a => a.Contractor)
+                .Include(a => a.Contractor.Address)
                 .ToList();
             
             appointmentAvailable = true;
