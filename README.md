@@ -37,7 +37,7 @@ A contractor will be able to log in and see a schedule of confirmed appointments
     </div>
     ```
 
-- [ ] Code: 140801 <br/>
+- [x] Code: 140801 <br/>
 
     Category: Identity User<br/>
     Descrption: Role Seeding<br/>

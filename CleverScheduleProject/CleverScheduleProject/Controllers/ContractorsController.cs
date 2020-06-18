@@ -120,7 +120,6 @@ namespace CleverScheduleProject.Controllers
             };
             appointments.Insert(0, contractorAppointment);
 
-
             ViewData["Contractor"] = contractor;
             return View(appointments);
         }

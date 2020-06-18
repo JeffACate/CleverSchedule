@@ -77,14 +77,22 @@ namespace CleverScheduleProject.Controllers
                 newAppointment.ClientId = client.ClientId;
                 newAppointment.Status = Constants.Appointment_Variables.Pending;
 
-                var allAppointments = _context.Appointments;
+                // if: the appointment is in the db, do not add and redirect.
+                var allAppointments = _context.Appointments.Where(a => a.DateTime.DayOfYear == newAppointment.DateTime.DayOfYear);
+
+                if (newAppointment.DateTime.Ticks < DateTime.Now.Ticks)
+                {
+                    return RedirectToAction(nameof(InvalidAppointment), newAppointment);
+                }
                 foreach (var appointment in allAppointments)
                 {
-                    if(appointment.DateTime == newAppointment.DateTime)
+                    if (appointment.DateTime.Ticks == newAppointment.DateTime.Ticks)
                     {
-                        RedirectToAction(nameof(InvalidAppointment), newAppointment);
+                        return RedirectToAction(nameof(InvalidAppointment), newAppointment);
                     }
                 }
+                
+                // else: add appointment to db with Pending status
                 _context.Appointments.Add(newAppointment);
 
                 // Comment code: 140803 check appointment availability
@@ -124,9 +132,14 @@ namespace CleverScheduleProject.Controllers
                 return RedirectToAction(nameof(SuggestAlternate), appointmentToConfirm);
             }
         }
-        public IActionResult InvalidAppointment()
+        public IActionResult InvalidAppointment(Appointment invalidAppointment)
         {
-            return View();
+            Contractor contractor =  _context.Contractors.Where(c => c.ContractorId == invalidAppointment.ContractorId).SingleOrDefault();
+            ViewData["Contractor"] = contractor.Name;
+            Client client = _context.Clients.Where(cl => cl.ClientId == invalidAppointment.ClientId).SingleOrDefault();
+            ViewData["Client"] = client.Name;
+            invalidAppointment.Status = Constants.Appointment_Variables.Denied;
+            return View(invalidAppointment);
         }
         public IActionResult SuggestAlternate(Appointment appointmentToSuggest)
         {
@@ -134,13 +147,12 @@ namespace CleverScheduleProject.Controllers
             // Send list in ViewData
             return View(appointmentToSuggest);
         }
-        public async Task<IActionResult> AppointmentConfirmed(Appointment appointment)
+        public async Task<IActionResult> AppointmentConfirmed(Appointment approvedAppointment)
         {
-            Appointment confirmedAppointment = _context.Appointments.Where(a => a.ContractorId == appointment.ContractorId && a.DateTime == appointment.DateTime).SingleOrDefault();
-            confirmedAppointment.Status = Constants.Appointment_Variables.Approved;
+            approvedAppointment.Status = Constants.Appointment_Variables.Approved;
             await _context.SaveChangesAsync();
             //return RedirectToAction(nameof(Index),"Clients");
-            return View(confirmedAppointment);
+            return View(approvedAppointment);
         }
 
         // GET: Appointments/Edit/5

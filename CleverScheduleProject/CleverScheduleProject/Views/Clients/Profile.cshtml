@@ -3,16 +3,12 @@
 @{
     ViewData["Title"] = "Profile";
 }
-@*body*@
-@*Title*@
 <div class="row col-sm-12 justify-content-center">
     <div>
         <h1 class="text-center">Profile</h1>
         <hr class="bg-white" />
     </div>
 </div>
-@*MAIN*@
-@*Client section*@
 <div class="row">
     <div class="border border-light text-dark col-sm-3" style="background-color: cadetblue; max-width: 200px !important;">
         <dl class="row text-dark pt-2 " style="background-color: teal">
@@ -68,7 +64,6 @@
             </tr>
         </thead>
         <tbody>
-
             @if (ViewBag.Appointments.Count > 0 )
             {
                 @foreach (var item in @ViewBag.Appointments)
@@ -96,9 +91,3 @@
 </div>
 
 </div>
-
-<div class="row" hidden>
-    <a  id="RouteCall" class="btn col-sm-12 btn-danger text-light" >Make the Call</a>
-</div>
-@*MAIN*@
-@*body*@
