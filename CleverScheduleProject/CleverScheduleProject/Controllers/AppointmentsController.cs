@@ -77,6 +77,7 @@ namespace CleverScheduleProject.Controllers
                     .SingleOrDefault();
                 newAppointment.ClientId = client.ClientId;
                 newAppointment.Status = Constants.Appointment_Variables.Pending;
+                newAppointment.EndTime = newAppointment.DateTime; // + 1 hour
 
                 // if: the appointment is in the db, do not add and redirect.
                 List<Appointment> allAppointments = _context.Appointments.Where(a => a.DateTime.DayOfYear == newAppointment.DateTime.DayOfYear).ToList(); ;
@@ -92,7 +93,6 @@ namespace CleverScheduleProject.Controllers
                         return RedirectToAction(nameof(InvalidAppointment), newAppointment);
                     }
                 }
-                
                 // else: add appointment to db with Pending status
                 _context.Appointments.Add(newAppointment);
 
@@ -127,10 +127,12 @@ namespace CleverScheduleProject.Controllers
 
             foreach (Appointment appointment in appointmentsToday)
             {
-                appointment.DriveTimeToNewAppointment = _travelTimeService.GetTravelTime(appointment.Client.Address, appointmentToConfirm.Client.Address).Result;
+                //appointment.EndTime = appointment.DateTime + 1 hour
+                appointment.DriveTimeToNewAppointment = await _travelTimeService.GetTravelTime(appointment.Client.Address, appointmentToConfirm.Client.Address);
             }
 
-            //bool appointmentAvailable = CheckAllAppointments(appointmentsToday, appointmentToConfirm);
+            throw new NotImplementedException();
+            appointmentAvailable = CheckAllAppointments(appointmentToConfirm);
 
             if(appointmentAvailable) 
             {
@@ -142,11 +144,22 @@ namespace CleverScheduleProject.Controllers
                 return RedirectToAction(nameof(SuggestAlternate), new Appointment() ); 
             }
         }
-        private bool CheckAllAppointments(Appointment appointmentsToConfirm)
+        private bool CheckAllAppointments(Appointment appointmentToConfirm)
         {
             bool appointmentAvailable = false;
 
-
+            /* 
+                for loop
+                    if (
+                        (Appointment[i].EndTime + Appointment[i].DriveTimeToNewAppointment) < appointmentToConfirm &&
+                        (Appointment[i+1].EndTime + Appointment[i+1].DriveTimeToAppointment) < appointmentToConfirm &&
+                        (Appointment.DateTime > Appointment[i].EndTime
+                       )
+                        {
+                            appointmentAvailable == true;
+                            break;
+                        }
+            */
 
             return appointmentAvailable;
         }

@@ -25,5 +25,6 @@ namespace CleverScheduleProject.Models
         public static List<SelectListItem> Contractors { get; set; }
         [NotMapped]
         public double DriveTimeToNewAppointment { get; set; }
+        public DateTime EndTime { get; set; }
     }
 }
