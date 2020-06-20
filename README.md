@@ -24,7 +24,7 @@ A contractor will be able to log in and see a schedule of confirmed appointments
 ### To do: 
   #### Current: Scheduling algorithm 140803
 ###### 6/20:
-  - [ ] check if available ```code: 140803 ```
+  - [ ] check if available ```Code: 140803 ```
   - [ ] Finalize views
     - [ ] Appointment confirmed
     - [ ] Invalid appointment
@@ -83,7 +83,7 @@ A contractor will be able to log in and see a schedule of confirmed appointments
 
     Category: UI/Routing<br/>
     Description: Logout button uses a form instead of anchor tag resulting in inconsistant UI/Css styling.<br/>
-    Purpose: <br/>
+    Purpose:
       - [ ] Alter _PartialLogin to implement anchor instead of form.
       - [ ] Route through identity logout endpoint.
       - [ ] Route back to home page. 
