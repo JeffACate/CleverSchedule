@@ -84,7 +84,7 @@ A contractor will be able to log in and see a schedule of confirmed appointments
     Category: UI/Routing<br/>
     Description: Logout button uses a form instead of anchor tag resulting in inconsistant UI/Css styling.<br/>
     Purpose:
-      - [ ] Alter _PartialLogin to implement anchor instead of form.
-      - [ ] Route through identity logout endpoint.
-      - [ ] Route back to home page. 
+  - [ ] Alter _PartialLogin to implement anchor instead of form.
+  - [ ] Route through identity logout endpoint.
+  - [ ] Route back to home page. 
     Snippet: <br/>
