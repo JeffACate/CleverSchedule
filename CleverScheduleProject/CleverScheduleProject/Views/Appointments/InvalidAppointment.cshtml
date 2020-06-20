@@ -1,7 +1,7 @@
 ﻿@model CleverScheduleProject.Models.Appointment
 
 @{
-    ViewData["Title"] = "AppointmentConfirmed";
+    ViewData["Title"] = "Invalid Confirmed";
 }
 
 <h1>Invalid Appointment</h1>
@@ -20,6 +20,12 @@
         </dt>
         <dd class="col-sm-10">
             @ViewData["Contractor"]
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DateTime)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DateTime)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Status)

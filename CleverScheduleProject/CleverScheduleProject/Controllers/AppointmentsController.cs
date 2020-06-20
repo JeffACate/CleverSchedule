@@ -68,9 +68,10 @@ namespace CleverScheduleProject.Controllers
         {
             if (ModelState.IsValid)
             {
+                //Appointment newAppointment = incomingAppointment;
                 var applicationDbContext = _context.Clients.Include(c => c.IdentityUser);
                 var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var client = _context.Clients.Where(c => c.IdentityUserId == userId)
+                Client client = _context.Clients.Where(c => c.IdentityUserId == userId)
                     .Include(c => c.Address)
                     .Include(c => c.IdentityUser)
                     .SingleOrDefault();
@@ -78,7 +79,7 @@ namespace CleverScheduleProject.Controllers
                 newAppointment.Status = Constants.Appointment_Variables.Pending;
 
                 // if: the appointment is in the db, do not add and redirect.
-                var allAppointments = _context.Appointments.Where(a => a.DateTime.DayOfYear == newAppointment.DateTime.DayOfYear);
+                List<Appointment> allAppointments = _context.Appointments.Where(a => a.DateTime.DayOfYear == newAppointment.DateTime.DayOfYear).ToList(); ;
 
                 if (newAppointment.DateTime.Ticks < DateTime.Now.Ticks)
                 {
@@ -97,7 +98,7 @@ namespace CleverScheduleProject.Controllers
 
                 // Comment code: 140803 check appointment availability
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(CheckAvailability),newAppointment);
+                return RedirectToAction(nameof(CheckAvailability), newAppointment);
             }
             ViewData["ClientId"] = new SelectList(_context.Clients, "ClientId", "ClientId", newAppointment.ClientId);
             ViewData["ContractorId"] = new SelectList(_context.Contractors, "Name", "ContractorId", newAppointment.ContractorId);
@@ -107,7 +108,7 @@ namespace CleverScheduleProject.Controllers
         public async Task<IActionResult> CheckAvailability(Appointment appointmentToConfirm)
         {
             // Comment code: 140804
-            bool appointmentAvailable = false; //appointment unavailable at first
+            bool appointmentAvailable = true; //appointment unavailable at first
 
             Contractor contractor = _context.Contractors.Where(c => c.ContractorId == appointmentToConfirm.ContractorId) // Contractor Address
                     .Include(c => c.Address)
@@ -115,43 +116,68 @@ namespace CleverScheduleProject.Controllers
 
             Address startAddress = contractor.Address; // Starting Address = Contractor Address at first
 
-            List<Appointment> appointmentsToday = _context.Appointments.Where(a => a.DateTime.Date == DateTime.Today) 
+            List<Appointment> appointmentsToday = _context.Appointments.Where(a => a.DateTime.Date == DateTime.Today && a.Status == Constants.Appointment_Variables.Approved) 
                 .Include(a => a.Client)
                 .Include(a => a.Client.Address)
                 .Include(a => a.Contractor)
                 .Include(a => a.Contractor.Address)
                 .ToList();
-            
-            appointmentAvailable = true;
-            if(appointmentAvailable)
+
+            appointmentToConfirm.Client = _context.Clients.Where(c => c.ClientId == appointmentToConfirm.ClientId).SingleOrDefault();
+
+            foreach (Appointment appointment in appointmentsToday)
             {
-                return RedirectToAction(nameof(AppointmentConfirmed), appointmentToConfirm);
+                appointment.DriveTimeToNewAppointment = _travelTimeService.GetTravelTime(appointment.Client.Address, appointmentToConfirm.Client.Address).Result;
             }
-            else
+
+            //bool appointmentAvailable = CheckAllAppointments(appointmentsToday, appointmentToConfirm);
+
+            if(appointmentAvailable) 
             {
-                return RedirectToAction(nameof(SuggestAlternate), appointmentToConfirm);
+                return RedirectToAction(nameof(AppointmentConfirmed), appointmentToConfirm); 
             }
+            else 
+            {
+                appointmentToConfirm.Status = Constants.Appointment_Variables.Denied;
+                return RedirectToAction(nameof(SuggestAlternate), new Appointment() ); 
+            }
+        }
+        private bool CheckAllAppointments(Appointment appointmentsToConfirm)
+        {
+            bool appointmentAvailable = false;
+
+
+
+            return appointmentAvailable;
         }
         public IActionResult InvalidAppointment(Appointment invalidAppointment)
         {
+            invalidAppointment.Status = Constants.Appointment_Variables.Denied;
             Contractor contractor =  _context.Contractors.Where(c => c.ContractorId == invalidAppointment.ContractorId).SingleOrDefault();
             ViewData["Contractor"] = contractor.Name;
             Client client = _context.Clients.Where(cl => cl.ClientId == invalidAppointment.ClientId).SingleOrDefault();
             ViewData["Client"] = client.Name;
-            invalidAppointment.Status = Constants.Appointment_Variables.Denied;
             return View(invalidAppointment);
         }
         public IActionResult SuggestAlternate(Appointment appointmentToSuggest)
         {
             // Get list of available appointments list of appointments where distanceToNext < 
             // Send list in ViewData
+            Contractor contractor = _context.Contractors.Where(c => c.ContractorId == appointmentToSuggest.ContractorId).SingleOrDefault();
+            ViewData["Contractor"] = contractor.Name;
+            Client client = _context.Clients.Where(cl => cl.ClientId == appointmentToSuggest.ClientId).SingleOrDefault();
+            ViewData["Client"] = client.Name;
             return View(appointmentToSuggest);
         }
         public async Task<IActionResult> AppointmentConfirmed(Appointment approvedAppointment)
         {
+            approvedAppointment = _context.Appointments.Where(a => a.DateTime == approvedAppointment.DateTime).SingleOrDefault();
             approvedAppointment.Status = Constants.Appointment_Variables.Approved;
             await _context.SaveChangesAsync();
-            //return RedirectToAction(nameof(Index),"Clients");
+            Contractor contractor = _context.Contractors.Where(c => c.ContractorId == approvedAppointment.ContractorId).SingleOrDefault();
+            ViewData["Contractor"] = contractor.Name;
+            Client client = _context.Clients.Where(cl => cl.ClientId == approvedAppointment.ClientId).SingleOrDefault();
+            ViewData["Client"] = client.Name;
             return View(approvedAppointment);
         }
 
