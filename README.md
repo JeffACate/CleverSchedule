@@ -23,6 +23,14 @@ A contractor will be able to log in and see a schedule of confirmed appointments
 
 ### To do: 
   #### Current: Scheduling algorithm 140803
+###### 6/20
+- [] Routing algorithm
+- [ ] check if available ```code: 140803 ```
+- [ ] Finalize views
+ - [ ] Appointment confirmed
+ - [ ] Invalid appointment
+ - [ ] Suggest new appointment
+
 
 - [ ] Code: 140800<br/>
 
@@ -73,7 +81,7 @@ A contractor will be able to log in and see a schedule of confirmed appointments
 
     Address startAddress = client.Contractor.Address;
     ```
-- [x] Code: 140805 <br/>
+- [ ] Code: 140805 <br/>
 
     Category: UI/Routing<br/>
     Description: Logout button uses a form instead of anchor tag resulting in inconsistant UI/Css styling.<br/>
