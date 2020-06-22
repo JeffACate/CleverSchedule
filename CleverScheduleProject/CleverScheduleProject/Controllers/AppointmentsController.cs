@@ -77,6 +77,7 @@ namespace CleverScheduleProject.Controllers
                     .SingleOrDefault();
                 newAppointment.ClientId = client.ClientId;
                 newAppointment.Status = Constants.Appointment_Variables.Pending;
+                // calculate end time to newAppointment to verify approval status 
                 newAppointment.EndTime = newAppointment.DateTime; // + 1 hour
 
                 // if: the appointment is in the db, do not add and redirect.
@@ -127,6 +128,7 @@ namespace CleverScheduleProject.Controllers
 
             foreach (Appointment appointment in appointmentsToday)
             {
+                // assign end times to all appointments
                 //appointment.EndTime = appointment.DateTime + 1 hour
                 appointment.DriveTimeToNewAppointment = await _travelTimeService.GetTravelTime(appointment.Client.Address, appointmentToConfirm.Client.Address);
             }

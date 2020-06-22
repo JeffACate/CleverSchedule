@@ -23,8 +23,8 @@ A contractor will be able to log in and see a schedule of confirmed appointments
 
 ### To do: 
   #### Current: Scheduling algorithm 140803
-###### 6/20:
   - [ ] check if available ```Code: 140803 ```
+  - [ ] route to corresponding view
   - [ ] Finalize views
     - [ ] Appointment confirmed
     - [ ] Invalid appointment
