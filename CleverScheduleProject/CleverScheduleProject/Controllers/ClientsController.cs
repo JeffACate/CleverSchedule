@@ -59,7 +59,7 @@ namespace CleverScheduleProject.Controllers
 
             var appointments = _context.Appointments.Where(a => a.ClientId == client.ClientId)
                 .Where(a => a.Status.Equals(Constants.Appointment_Variables.Approved))
-                .Where(a => a.DateTime.DayOfYear == DateTime.Today.DayOfYear)
+                .Where(a => a.DateTime > DateTime.Now)
                 .Include(a => a.Client)
                 .Include(a => a.Contractor)
                 .ToList();

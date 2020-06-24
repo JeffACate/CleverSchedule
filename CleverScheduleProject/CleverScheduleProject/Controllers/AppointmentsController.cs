@@ -127,7 +127,7 @@ namespace CleverScheduleProject.Controllers
             appointmentToConfirm.Client = _context.Clients.Where(c => c.ClientId == appointmentToConfirm.ClientId).SingleOrDefault();
 
             
-            appointmentAvailable = CheckAllAppointments(appointmentToConfirm).Result;
+            appointmentAvailable = CheckAllAppointments(appointmentToConfirm);
 
             if(appointmentAvailable) 
             {
@@ -136,22 +136,27 @@ namespace CleverScheduleProject.Controllers
             else 
             {
                 appointmentToConfirm.Status = Constants.Appointment_Variables.Denied;
-                return RedirectToAction(nameof(SuggestAlternate), new Appointment() ); 
+                return RedirectToAction(nameof(InvalidAppointment), appointmentToConfirm ); 
             }
         }
-        private async Task<bool> CheckAllAppointments(Appointment appointmentToConfirm)
+        private bool CheckAllAppointments(Appointment appointmentToConfirm)
         {
             bool appointmentAvailable = false;
-            List<Appointment> listOfAppointments = _context.Appointments.Where(a => a.DateTime.Date == DateTime.Today && a.Status == Constants.Appointment_Variables.Approved)
+            appointmentToConfirm.Client = _context.Clients.Where(c => c.ClientId == appointmentToConfirm.ClientId).Include(c => c.Address).SingleOrDefault();
+            List<Appointment> listOfAppointments = _context.Appointments.Where(a => a.DateTime.Date == appointmentToConfirm.DateTime.Date && a.Status == Constants.Appointment_Variables.Approved)
                 .Include(a => a.Client)
                 .Include(a => a.Client.Address)
                 .Include(a => a.Contractor)
                 .Include(a => a.Contractor.Address)
                 .ToList();
-
+            if(listOfAppointments.Count == 0)
+            {
+                return true;
+            }
             foreach (Appointment appointment in listOfAppointments)
             {
-                appointment.DriveTimeToNewAppointment = await _travelTimeService.GetTravelTime(appointment.Client.Address, appointmentToConfirm.Client.Address);
+                appointment.EndTime = appointment.DateTime.AddHours(1);
+                appointment.DriveTimeToNewAppointment = _travelTimeService.GetTravelTime(appointment.Client.Address, appointmentToConfirm.Client.Address).Result;
             }
             for (int i = 0; i < listOfAppointments.Count; i++)
             {
@@ -183,7 +188,7 @@ namespace CleverScheduleProject.Controllers
                     }
                 }
                 else if (
-                         ((i == 0) && (appointmentToConfirm.DateTime > listOfAppointments[i].DateTime)) ||
+                         ((i == 0) && (appointmentToConfirm.DateTime > listOfAppointments[i].DateTime) && listOfAppointments.Count > 1) ||
                          ((i > 0) && (i < (listOfAppointments.Count - 1))
                          )
                         )
