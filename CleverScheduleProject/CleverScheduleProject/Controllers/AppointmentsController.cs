@@ -78,16 +78,16 @@ namespace CleverScheduleProject.Controllers
                 newAppointment.ClientId = client.ClientId;
                 newAppointment.Status = Constants.Appointment_Variables.Pending;
                 // calculate end time to newAppointment to verify approval status 
-                newAppointment.EndTime = newAppointment.DateTime; // + 1 hour
+                newAppointment.EndTime = newAppointment.DateTime.AddHours(1);
 
-                // if: the appointment is in the db, do not add and redirect.
+                // IF: the APPOINTMENT is IN the DB, do not add and REDIRECT to INVALID APPOINTMENT
                 List<Appointment> allAppointments = _context.Appointments.Where(a => a.DateTime.DayOfYear == newAppointment.DateTime.DayOfYear).ToList(); ;
-
+                
                 if (newAppointment.DateTime.Ticks < DateTime.Now.Ticks)
                 {
                     return RedirectToAction(nameof(InvalidAppointment), newAppointment);
                 }
-                foreach (var appointment in allAppointments)
+                foreach (Appointment appointment in allAppointments)
                 {
                     if (appointment.DateTime.Ticks == newAppointment.DateTime.Ticks)
                     {
@@ -105,11 +105,11 @@ namespace CleverScheduleProject.Controllers
             ViewData["ContractorId"] = new SelectList(_context.Contractors, "Name", "ContractorId", newAppointment.ContractorId);
             return View(newAppointment);
         }
-
+        
         public async Task<IActionResult> CheckAvailability(Appointment appointmentToConfirm)
         {
             // Comment code: 140804
-            bool appointmentAvailable = true; //appointment unavailable at first
+            bool appointmentAvailable = false; //appointment unavailable at first
 
             Contractor contractor = _context.Contractors.Where(c => c.ContractorId == appointmentToConfirm.ContractorId) // Contractor Address
                     .Include(c => c.Address)
@@ -126,15 +126,8 @@ namespace CleverScheduleProject.Controllers
 
             appointmentToConfirm.Client = _context.Clients.Where(c => c.ClientId == appointmentToConfirm.ClientId).SingleOrDefault();
 
-            foreach (Appointment appointment in appointmentsToday)
-            {
-                // assign end times to all appointments
-                //appointment.EndTime = appointment.DateTime + 1 hour
-                appointment.DriveTimeToNewAppointment = await _travelTimeService.GetTravelTime(appointment.Client.Address, appointmentToConfirm.Client.Address);
-            }
-
-            throw new NotImplementedException();
-            appointmentAvailable = CheckAllAppointments(appointmentToConfirm);
+            
+            appointmentAvailable = CheckAllAppointments(appointmentToConfirm).Result;
 
             if(appointmentAvailable) 
             {
@@ -146,22 +139,112 @@ namespace CleverScheduleProject.Controllers
                 return RedirectToAction(nameof(SuggestAlternate), new Appointment() ); 
             }
         }
-        private bool CheckAllAppointments(Appointment appointmentToConfirm)
+        private async Task<bool> CheckAllAppointments(Appointment appointmentToConfirm)
         {
             bool appointmentAvailable = false;
+            List<Appointment> listOfAppointments = _context.Appointments.Where(a => a.DateTime.Date == DateTime.Today && a.Status == Constants.Appointment_Variables.Approved)
+                .Include(a => a.Client)
+                .Include(a => a.Client.Address)
+                .Include(a => a.Contractor)
+                .Include(a => a.Contractor.Address)
+                .ToList();
 
-            /* 
-                for loop
+            foreach (Appointment appointment in listOfAppointments)
+            {
+                appointment.DriveTimeToNewAppointment = await _travelTimeService.GetTravelTime(appointment.Client.Address, appointmentToConfirm.Client.Address);
+            }
+            for (int i = 0; i < listOfAppointments.Count; i++)
+            {
+                if ((i == 0) &&
+                   (appointmentToConfirm.DateTime < listOfAppointments[i].DateTime)
+                  )
+                {
+                    Console.WriteLine("appointmentToConfirm.DateTime" + appointmentToConfirm.DateTime);
+                    Console.WriteLine("appointmentToConfirm.EndTime: " + appointmentToConfirm.EndTime);
+                    Console.WriteLine("Drive time to appointment after appointmentToConfirm: " + listOfAppointments[i].DriveTimeToNewAppointment);
+                    DateTime endOfAppointmentToConfirmPlusDriveTimetoAppoitnmentAfter = (appointmentToConfirm.EndTime.AddSeconds(listOfAppointments[i].DriveTimeToNewAppointment));
+                    Console.WriteLine("End of appointmentToConfirmToConfirm Plus DriveTime: " + endOfAppointmentToConfirmPlusDriveTimetoAppoitnmentAfter);
+                    Console.WriteLine();
+
+                    bool CanIGetToAppointmentAfterAppointmentToConfirm = endOfAppointmentToConfirmPlusDriveTimetoAppoitnmentAfter < listOfAppointments[i].DateTime;
+                    Console.WriteLine("Do I have time to get to the Appointment after appointmentToCofirm? " + CanIGetToAppointmentAfterAppointmentToConfirm);
+                    Console.WriteLine();
+
+                    Console.WriteLine("listOfAppointments[i].DateTime: " + listOfAppointments[i].DateTime);
+                    Console.WriteLine("listOfAppointments[i].EndTime: " + listOfAppointments[i].EndTime);
+                    Console.WriteLine("listOfAppointments[i].DriveTimeToNewAppointment: " + listOfAppointments[i].DriveTimeToNewAppointment);
+                    Console.WriteLine();
                     if (
-                        (Appointment[i].EndTime + Appointment[i].DriveTimeToNewAppointment) < appointmentToConfirm &&
-                        (Appointment[i+1].EndTime + Appointment[i+1].DriveTimeToAppointment) < appointmentToConfirm &&
-                        (Appointment.DateTime > Appointment[i].EndTime
-                       )
-                        {
-                            appointmentAvailable == true;
-                            break;
-                        }
-            */
+                        CanIGetToAppointmentAfterAppointmentToConfirm
+                    )
+                    {
+                        appointmentAvailable = true;
+                        break;
+                    }
+                }
+                else if (
+                         ((i == 0) && (appointmentToConfirm.DateTime > listOfAppointments[i].DateTime)) ||
+                         ((i > 0) && (i < (listOfAppointments.Count - 1))
+                         )
+                        )
+                {
+                    Console.WriteLine("listOfAppointments[i].DateTime: " + listOfAppointments[i].DateTime);
+                    Console.WriteLine("listOfAppointments[i].EndTime: " + listOfAppointments[i].EndTime);
+                    Console.WriteLine("listOfAppointments[i].DriveTimeToNewAppointment: " + listOfAppointments[i].DriveTimeToNewAppointment);
+                    DateTime endOfPriorAppointmentPlusDriveTime = (listOfAppointments[i].EndTime.AddSeconds(listOfAppointments[i].DriveTimeToNewAppointment));
+                    Console.WriteLine("End of Previous Appointment Plus DriveTime: " + endOfPriorAppointmentPlusDriveTime);
+                    Console.WriteLine();
+
+                    bool CanIGetToAppointmentToConfirm = endOfPriorAppointmentPlusDriveTime < appointmentToConfirm.DateTime;
+                    Console.WriteLine("Do I have time to get to the Appointment after first appointment? " + CanIGetToAppointmentToConfirm);
+                    Console.WriteLine();
+
+                    Console.WriteLine("appointmentToConfirm.DateTime" + appointmentToConfirm.DateTime);
+                    Console.WriteLine("appointmentToConfirm.EndTime: " + appointmentToConfirm.EndTime);
+                    Console.WriteLine("Drive time to appointment after appointmentToConfirm: " + listOfAppointments[i + 1].DriveTimeToNewAppointment);
+                    DateTime endOfAppointmentToConfirmPlusDriveTimetoAppoitnmentAfter = (appointmentToConfirm.EndTime.AddSeconds(listOfAppointments[i + 1].DriveTimeToNewAppointment));
+                    Console.WriteLine("End of appointmentToConfirmToConfirm Plus DriveTime: " + endOfAppointmentToConfirmPlusDriveTimetoAppoitnmentAfter);
+                    Console.WriteLine();
+
+                    bool CanIGetToAppointmentAfterAppointmentToConfirm = endOfAppointmentToConfirmPlusDriveTimetoAppoitnmentAfter < listOfAppointments[i + 1].DateTime;
+                    Console.WriteLine("Do I have time to get to the Appointment after appointmentToCofirm? " + CanIGetToAppointmentAfterAppointmentToConfirm);
+                    Console.WriteLine();
+
+                    Console.WriteLine("listOfAppointments[i+1].DateTime: " + listOfAppointments[i + 1].DateTime);
+                    Console.WriteLine("listOfAppointments[i+1].EndTime: " + listOfAppointments[i + 1].EndTime);
+                    Console.WriteLine("listOfAppointments[i+1].DriveTimeToNewAppointment: " + listOfAppointments[i + 1].DriveTimeToNewAppointment);
+                    Console.WriteLine();
+
+                    if (
+                    CanIGetToAppointmentToConfirm &&
+                    CanIGetToAppointmentAfterAppointmentToConfirm
+                    )
+                    {
+                        appointmentAvailable = true;
+                        break;
+                    }
+                }
+                else if (i == listOfAppointments.Count - 1)
+                {
+                    Console.WriteLine("listOfAppointments[i].DateTime: " + listOfAppointments[i].DateTime);
+                    Console.WriteLine("listOfAppointments[i].EndTime: " + listOfAppointments[i].EndTime);
+                    Console.WriteLine("listOfAppointments[i].DriveTimeToNewAppointment: " + listOfAppointments[i].DriveTimeToNewAppointment);
+                    DateTime endOfPriorAppointmentPlusDriveTime = (listOfAppointments[i].EndTime.AddSeconds(listOfAppointments[i].DriveTimeToNewAppointment));
+                    Console.WriteLine("End of Previous Appointment Plus DriveTime: " + endOfPriorAppointmentPlusDriveTime);
+                    Console.WriteLine();
+
+                    bool CanIGetToAppointmentToConfirm = endOfPriorAppointmentPlusDriveTime < appointmentToConfirm.DateTime;
+                    Console.WriteLine("Do I have time to get to the Appointment after first appointment? " + CanIGetToAppointmentToConfirm);
+                    Console.WriteLine();
+                    if (
+                        CanIGetToAppointmentToConfirm
+                    )
+                    {
+                        appointmentAvailable = true;
+                        break;
+                    }
+                }
+            }
 
             return appointmentAvailable;
         }
