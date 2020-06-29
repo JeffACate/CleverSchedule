@@ -26,7 +26,7 @@ A contractor will be able to log in and see a schedule of confirmed appointments
 <hr />
 
 ### To do: 
-  #### Current: Clean Code | Comments and Readability
+  #### Current: ``` Clean Code | Comments and Readability ```
   
   - [ ] Refactor
     - [ ] Appointment Creation
