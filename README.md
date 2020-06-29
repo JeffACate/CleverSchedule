@@ -26,7 +26,9 @@ A contractor will be able to log in and see a schedule of confirmed appointments
 <hr />
 
 ### To do: 
-  #### Current: ``` Clean Code | Comments and Readability ```
+A list of tasks I'm currently working on.
+
+#### Current: Clean Code | Comments and Readability
   
   - [ ] Refactor
     - [ ] Appointment Creation
@@ -41,7 +43,7 @@ A contractor will be able to log in and see a schedule of confirmed appointments
 <hr />
 
 ### Comment Code
-
+A developer tool I created to navigate a large project in Visual Studio Community more easily.
 - [ ] Code: 140800<br/>
 
     Category: Identity User<br/>
