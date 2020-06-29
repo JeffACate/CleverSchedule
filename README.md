@@ -6,7 +6,7 @@ This application is centered around a scheduling algorithm. This algorithm will 
 A client will be able to log in and see a list of their future appointments and sidebar with their information and upcoming appointment. 
 
 A contractor will be able to log in and see a schedule of confirmed appointments for the day and a map of locations for those appointments.
-
+<hr />
 ### Technologies: 
 
 * DB (Code first):
@@ -21,14 +21,22 @@ A contractor will be able to log in and see a schedule of confirmed appointments
   * ASP.Net Core MVC
   * Bootstrap 4 
 
+<hr />
+
 ### To do: 
   #### Current: Scheduling algorithm 140803
-  - [ ] check if available ```Code: 140803 ```
-  - [ ] route to corresponding view
+  
+  - [ ] Refactor
+    - [ ] Appointment Creation
+      - [ ] Select date
+      - [ ] Create list based on selected day
+        
+
+  - [x] route to corresponding view
   - [ ] Finalize views
     - [ ] Appointment confirmed
     - [ ] Invalid appointment
-    - [ ] Suggest new appointment
+  - [x] check if available ```Code: 140803 ```
 
 - [ ] Code: 140800<br/>
 
@@ -55,7 +63,7 @@ A contractor will be able to log in and see a schedule of confirmed appointments
     Description: Role assignment during registration<br/>
     Purpose: Encapsulate user Role. To find better way to limit client ability to assign role<br/>
 
-- [ ] Code: 140803<br />
+- [x] Code: 140803<br />
 
     Category: Algorithms<br/>
     Description: Check appointment availability<br/>
