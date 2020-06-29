@@ -26,7 +26,7 @@ A contractor will be able to log in and see a schedule of confirmed appointments
 <hr />
 
 ### To do: 
-  #### Current: Scheduling algorithm 140803
+  #### Current: Clean Code | Comments and Readability
   
   - [ ] Refactor
     - [ ] Appointment Creation
@@ -34,11 +34,13 @@ A contractor will be able to log in and see a schedule of confirmed appointments
       - [ ] Create list of available appointments
         
 
-  - [x] route to corresponding view
-  - [ ] Finalize views
-    - [ ] Appointment confirmed
-    - [ ] Invalid appointment
+
   - [x] check if available ``` Code: 140803 ```
+  - [x] route to corresponding view
+
+<hr />
+
+### Comment Code
 
 - [ ] Code: 140800<br/>
 
@@ -84,17 +86,16 @@ A contractor will be able to log in and see a schedule of confirmed appointments
     var client = _context.Clients.Where(c => c.IdentityUserId == userId)
         .Include(c => c.Address)
         .Include(c => c.Contractor
-        .Include(co => c.Contractor.Address
+        .Include(c => c.Contractor.Address
         .SingleOrDefault();
 
     Address startAddress = client.Contractor.Address;
     ```
 - [ ] Code: 140805 <br/>
 
-    Category: UI/Routing<br/>
+    Category: UX/UI<br/>
     Description: Logout button uses a form instead of anchor tag resulting in inconsistant UI/Css styling.<br/>
     Purpose:
   - [ ] Alter _PartialLogin to implement anchor instead of form.
   - [ ] Route through identity logout endpoint.
   - [ ] Route back to home page. 
-    Snippet: <br/>
